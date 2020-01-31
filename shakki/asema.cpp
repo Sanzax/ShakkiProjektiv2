@@ -109,6 +109,12 @@ void Asema::paivitaAsema(Siirto *siirto)
 		//
 		////muissa tapauksissa alkuruutuun null ja loppuruutuun sama alkuruudusta lähtenyt nappula
 
+		std::cout << siirto->getAlkuruutu().getSarake() << std::endl;
+		std::cout << siirto->getAlkuruutu().getRivi() << std::endl;
+
+		std::cout << siirto->getLoppuruutu().getSarake() << std::endl;
+		std::cout << siirto->getLoppuruutu().getRivi() << std::endl;
+
 		_lauta[siirto->getLoppuruutu().getRivi()][siirto->getLoppuruutu().getSarake()] = siirrettava;
 
 		_lauta[siirto->getAlkuruutu().getRivi()][siirto->getAlkuruutu().getSarake()] = NULL;
