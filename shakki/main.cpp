@@ -24,6 +24,9 @@ int main()
 	system("cls");
 	int koneenVari = peli.getKoneenVari();
 
+	Kayttoliittyma::getInstance()->annaVastustajanSiirto();;
+	
+
 	while (lopetus != 0) {
 		lista.clear();
 		Kayttoliittyma::getInstance()->piirraLauta();
@@ -36,6 +39,7 @@ int main()
 			continue;
 		}
 		Siirto siirto;
+		//Siirto siirto= Kayttoliittyma::getInstance()->annaVastustajanSiirto();;
 		if (asema.getSiirtovuoro() == koneenVari) {
 			MinMaxPaluu paluu;
 			if (koneenVari == 0) {
