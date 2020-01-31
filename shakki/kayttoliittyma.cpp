@@ -100,7 +100,7 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 			break;
 		}
 
-		if ( !(nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T')) {
+		if ( !(nappula == 'S' || nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T')) {
 			std::cout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
 			continue;
 		}
@@ -186,6 +186,11 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 		}
 
 		break;
+	}
+
+	if (lyhytLinna || pitkaLinna) {
+		siirto = Siirto(lyhytLinna,pitkaLinna);
+		return siirto;
 	}
 
 	int alkuX = aloitusKoordinaatti[0] - 'a';

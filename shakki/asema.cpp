@@ -3,6 +3,7 @@
 #include "minMaxPaluu.h"
 #include "nappula.h"
 #include "ruutu.h"
+#include <math.h>
 
 Nappula* Asema::vk = new Kuningas(L"\u2654", 0, VK);
 Nappula* Asema::vd = new Daami(L"\u2655", 0, VD);
@@ -30,8 +31,8 @@ Asema::Asema()
 	_lauta[0][0] = Asema::vt;
 	_lauta[0][1] = Asema::vr;
 	_lauta[0][2] = Asema::vl;
-	_lauta[0][3] = Asema::vk;
-	_lauta[0][4] = Asema::vd;
+	_lauta[0][3] = Asema::vd;
+	_lauta[0][4] = Asema::vk;
 	_lauta[0][5] = Asema::vl;
 	_lauta[0][6] = Asema::vr;
 	_lauta[0][7] = Asema::vt;
@@ -41,8 +42,8 @@ Asema::Asema()
 	_lauta[7][0] = Asema::mt;
 	_lauta[7][1] = Asema::mr;
 	_lauta[7][2] = Asema::ml;
-	_lauta[7][3] = Asema::mk;
-	_lauta[7][4] = Asema::md;
+	_lauta[7][3] = Asema::md;
+	_lauta[7][4] = Asema::mk;
 	_lauta[7][5] = Asema::ml;
 	_lauta[7][6] = Asema::mr;
 	_lauta[7][7] = Asema::mt;
@@ -61,24 +62,46 @@ void Asema::paivitaAsema(Siirto *siirto)
 
 	//Tarkastetaan on siirto lyhyt linna
 
+	if (siirto->onkoLyhytLinna()) {
+		//to do
+	}
+
 
 	// onko pitk‰ linna
 
-
+	if (siirto->onkoPitkaLinna()) {
+		//to do
+	}
 
 	// Kaikki muut siirrot
 
 
 		//Ottaa siirron alkuruudussa olleen nappulan talteen 
 
+		Nappula *siirrettava;
+
+		siirrettava = _lauta[siirto->getAlkuruutu().getRivi()][siirto->getAlkuruutu().getSarake()];
+
 
 		//Laittaa talteen otetun nappulan uuteen ruutuun
 
 
-		// Tarkistetaan oliko sotilaan kaksoisaskel
-		// (asetetaan kaksoisaskel-lippu)
 
+		// Tarkistetaan oliko sotilaan kaksoisaskel
+
+		if (siirrettava->getKoodi() == VS || siirrettava->getKoodi() == MS) {
+			if ((abs(siirto->getAlkuruutu().getSarake() - siirto->getLoppuruutu().getSarake())) == 2) {
+				kaksoisaskelSarakkeella = 1; // (asetetaan kaksoisaskel-lippu)
+			}
+		}
+
+		/*
 		// Ohestalyˆnti on tyhj‰‰n ruutuun. Vieress‰ oleva (sotilas) poistetaan.
+		if (kaksoisaskelSarakkeella == 1) {
+
+		}
+		*/
+
 
 		//// Katsotaan jos nappula on sotilas ja rivi on p‰‰tyrivi niin ei vaihdeta nappulaa 
 		////eli alkuruutuun laitetaan null ja loppuruudussa on jo kliittym‰n laittama nappula MIIKKA, ei taida minmaxin kanssa hehkua?
@@ -86,12 +109,41 @@ void Asema::paivitaAsema(Siirto *siirto)
 		//
 		////muissa tapauksissa alkuruutuun null ja loppuruutuun sama alkuruudusta l‰htenyt nappula
 
+		_lauta[siirto->getLoppuruutu().getRivi()][siirto->getLoppuruutu().getSarake()] = siirrettava;
+
+		_lauta[siirto->getAlkuruutu().getRivi()][siirto->getAlkuruutu().getSarake()] = NULL;
+
+
 		// katsotaan jos liikkunut nappula on kuningas niin muutetaan onkoKuningasLiikkunut arvo (molemmille v‰reille)
+		if (siirrettava->getKoodi() == VK) {
+			_onkoValkeaKuningasLiikkunut = true;
+		}
+
+		else if (siirrettava->getKoodi() == MK) {
+			_onkoMustaKuningasLiikkunut = true;
+		}
 
 		// katsotaan jos liikkunut nappula on torni niin muutetaan onkoTorniLiikkunut arvo (molemmille v‰reille ja molemmille torneille)
 
+		if (siirrettava->getKoodi() == MT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 7) {
+			_onkoMustaDTliikkunut = true;
+		}
+
+		else if (siirrettava->getKoodi() == MT && siirto->getAlkuruutu().getSarake() == 7 && siirto->getAlkuruutu().getRivi() == 7) {
+			_onkoMustaKTliikkunut = true;
+		}
+
+		else if (siirrettava->getKoodi() == VT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 0) {
+			_onkoValkeaDTliikkunut = true;
+		}
+
+		else if (siirrettava->getKoodi() == VT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 7) {
+			_onkoValkeaKTliikkunut = true;
+		}
+
 	//p‰ivitet‰‰n _siirtovuoro
 
+		_siirtovuoro = (_siirtovuoro == 0) ? 1 : 0;
 }
 
 
