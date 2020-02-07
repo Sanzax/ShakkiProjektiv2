@@ -12,6 +12,7 @@ using namespace std;
 
 int main()
 {
+	_setmode(_fileno(stdout), _O_U16TEXT);
 	wcout << "HeippariShakki\n";
 	wcout << "Tervetuloa pelaamaan!\n";
 	int lopetus = 100;
@@ -24,6 +25,8 @@ int main()
 	system("cls");
 	int koneenVari = peli.getKoneenVari();
 
+
+	asema.annaLaillisetSiirrot(lista);
 	Siirto siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
 	asema.paivitaAsema(&siirto);
 	Kayttoliittyma::getInstance()->piirraLauta();
@@ -59,7 +62,6 @@ int main()
 		asema.paivitaAsema(&siirto);
 	}
 	*/
-
 	
 	return 0;
 }

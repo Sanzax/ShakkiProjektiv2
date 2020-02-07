@@ -29,7 +29,7 @@ void Kayttoliittyma::piirraLauta()
 	//char q[] = "King: \xE2\x99\x94.\n";
 
 	//Saa unicode shakkinappulat toimimaan cout:n kanssa:
-	_setmode(_fileno(stdout), _O_U16TEXT);
+	//_setmode(_fileno(stdout), _O_U16TEXT);
 
 	/*
 		Kaksinkertainen for silmukka joka käy asema-olion laudan läpi ja jos
@@ -78,11 +78,11 @@ void Kayttoliittyma::piirraLauta()
 */
 
 
-bool onkoSyoteVirheellinen(const int arvo, const std::string& virheIlmoitus)
+bool onkoSyoteVirheellinen(const int arvo, const char* virheIlmoitus)
 {
 	for(int i = 0; i < 8; i++)
 		if(arvo == i) return false;
-	std::cout << virheIlmoitus << std::endl;
+	std::wcout << virheIlmoitus << std::endl;
 	return true;
 }
 
@@ -95,7 +95,7 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 
 	while (true)
 	{
-		std::cout << "Anna siirto" << std::endl; //Kysytääm käyttäjältä siirtoa
+		std::wcout << "Anna siirto" << std::endl; //Kysytääm käyttäjältä siirtoa
 		std::cin >> syote;
 
 		if (syote == "O-O") // Jos syöte on lyhyt tai...
@@ -119,13 +119,13 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 		// Jos Nappula ei ole kelvollinen, kysytään siirtoa uudelleen
 		if (!(nappula == 'S' || nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T')) 
 		{
-			std::cout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
+			std::wcout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
 			continue;
 		}
 		// Jos viiva ei ole kelvollinen, kysytään siirtoa uudelleen
 		if(syote[3] != '-')
 		{
-			std::cout << "Viivasyöte ei ollut kelvollinen" << std::endl;
+			std::wcout << "Viivasyöte ei ollut kelvollinen" << std::endl;
 			continue;
 		}
 		// Jos koordinaatit ei ole kelvollisia, kysytään siirota uudelleen

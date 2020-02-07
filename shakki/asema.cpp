@@ -22,6 +22,7 @@ Nappula* Asema::ms = new Sotilas(L"\u265F", 1, MS);
 
 Asema::Asema()
 {
+	_siirtovuoro = 0;
 	// Ensin alustetaan kaikki laudan ruudut nappulla "NULL", koska muuten ruuduissa satunnaista tauhkaa
 	for (int j = 0; j < 8; j++)
 		for (int i = 0; i < 8; i++)
@@ -47,6 +48,7 @@ Asema::Asema()
 	_lauta[7][5] = Asema::ml;
 	_lauta[7][6] = Asema::mr;
 	_lauta[7][7] = Asema::mt;
+
 	for (int i = 0; i < 8; i++)
 		_lauta[6][i] = Asema::ms;
 }
@@ -109,11 +111,11 @@ void Asema::paivitaAsema(Siirto *siirto)
 	//
 	////muissa tapauksissa alkuruutuun null ja loppuruutuun sama alkuruudusta lähtenyt nappula
 
-	std::cout << siirto->getAlkuruutu().getSarake() << std::endl;
-	std::cout << siirto->getAlkuruutu().getRivi() << std::endl;
+	//std::wcout << siirto->getalkuruutu().getsarake() << std::endl;
+	//std::wcout << siirto->getalkuruutu().getrivi() << std::endl;
 
-	std::cout << siirto->getLoppuruutu().getSarake() << std::endl;
-	std::cout << siirto->getLoppuruutu().getRivi() << std::endl;
+	//std::wcout << siirto->getloppuruutu().getsarake() << std::endl;
+	//std::wcout << siirto->getloppuruutu().getrivi() << std::endl;
 
 	_lauta[siirto->getLoppuruutu().getRivi()][siirto->getLoppuruutu().getSarake()] = siirrettava;
 
@@ -156,13 +158,13 @@ void Asema::paivitaAsema(Siirto *siirto)
 
 int Asema::getSiirtovuoro()
 {
-	return 0;
+	return _siirtovuoro;
 }
 
 
 void Asema::setSiirtovuoro(int vuoro)
 {
-
+	_siirtovuoro = vuoro;
 }
 
 
@@ -354,6 +356,14 @@ void Asema::huolehdiKuninkaanShakeista(std::list<Siirto>& lista, int vari)
 }
 
 
-void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista) {
-
+void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista) 
+{
+	for(int y = 0; y < 8; y++)
+	{
+		for(int x = 0; x < 8; x++)
+		{
+			if(_lauta[y][x] != NULL && _lauta[y][x]->getVari() == _siirtovuoro)
+				_lauta[y][x]->annaSiirrot(lista, new Ruutu(x, y), this, _siirtovuoro);
+		}
+	}
 }
