@@ -49,8 +49,12 @@ Asema::Asema()
 	_lauta[7][6] = Asema::mr;
 	_lauta[7][7] = Asema::mt;
 
+	
 	for (int i = 0; i < 8; i++)
 		_lauta[6][i] = Asema::ms;
+
+	_lauta[4][3] = Asema::vd;
+
 }
 
 
@@ -363,7 +367,12 @@ void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista)
 		for(int x = 0; x < 8; x++)
 		{
 			if(_lauta[y][x] != NULL && _lauta[y][x]->getVari() == _siirtovuoro)
-				_lauta[y][x]->annaSiirrot(lista, new Ruutu(x, y), this, _siirtovuoro);
+			{
+				Ruutu* alkuRuutu = new Ruutu(x, y);
+				_lauta[y][x]->annaSiirrot(lista, alkuRuutu, this, _siirtovuoro);
+				delete alkuRuutu;
+			}
+				
 		}
 	}
 }
