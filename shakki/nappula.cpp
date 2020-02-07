@@ -18,11 +18,8 @@ Siirto lisaaSiirto(Ruutu& alkuRuutu, Ruutu& loppuRuutu, int x, int y, const char
 	loppuRuutu.setRivi(y);
 	loppuRuutu.setSarake(x);
 	Siirto siirto = Siirto(alkuRuutu, loppuRuutu);
-	if(nimi != "Sotilas")
-	{
-		std::wcout << nimi << " " << siirto.getAlkuruutu().getSarake() + 1 << ", " << siirto.getAlkuruutu().getRivi() + 1 <<
-			" : " << siirto.getLoppuruutu().getSarake() + 1 << ", " << siirto.getLoppuruutu().getRivi() + 1 << std::endl;
-	}
+	std::wcout << nimi << " " << siirto.getAlkuruutu().getSarake() + 1 << ", " << siirto.getAlkuruutu().getRivi() + 1 <<
+		" : " << siirto.getLoppuruutu().getSarake() + 1 << ", " << siirto.getLoppuruutu().getRivi() + 1 << std::endl;
 
 
 	return siirto;
@@ -76,9 +73,37 @@ void Torni::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema
 }
 
 
-void Ratsu::annaSiirrot(std::list<Siirto>& lista, Ruutu* ruutu, Asema* asema, int vari)
+void Ratsu::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema, int vari)
 {
-	
+	int x = alkuRuutu->getSarake();
+	int y = alkuRuutu->getRivi();
+	Ruutu* loppuRuutu = new Ruutu(0, 0);
+
+	const int kood_deltat[8][2] =
+	{
+		{-1, 2}, {-1, -2}, {1, 2}, {1, -2},
+		{-2, 1}, {-2, -1}, {2, 1}, {2, -1}
+	};
+
+	for(int d = 0; d < 8; d++)
+	{
+		int dx = kood_deltat[d][0];
+		int dy = kood_deltat[d][1];
+
+		int uusi_x = x + dx;
+		int uusi_y = y + dy;
+
+		if(uusi_x < 0 || uusi_x > 7 || uusi_y < 0 || uusi_y > 7)
+			continue;
+
+		Nappula* nappula = asema->_lauta[uusi_y][uusi_x];
+
+		if((nappula != NULL && vari == 0 && nappula->getVari() == 0) || (nappula != NULL && vari == 1 && nappula->getVari() == 1))
+			continue;
+
+		lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, uusi_x, uusi_y, "Ratsu"));
+	}
+
 }
 
 
@@ -138,15 +163,62 @@ void Daami::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema
 }
 
 
-void Kuningas::annaSiirrot(std::list<Siirto>& lista, Ruutu* ruutu, Asema* asema, int vari)
+void Kuningas::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema, int vari)
 {
-	/*perusidea on että kaikki viereiset ruudut ovat sallittuja. kuten tornilla ja lähetillä,
-	oman nappulan päälle ei voi mennä ja vastustajan nappulan voi syödä.
+	int x = alkuRuutu->getSarake();
+	int y = alkuRuutu->getRivi();
+	Ruutu* loppuRuutu = new Ruutu(0, 0);
 
-	Kaikki muu kuninkaaseen liittyvä tarkistus tehdään eri paikassa*/
+	for(int j = 0; j < 4; j++)
+	{
+		int tempX = 0;
+		int tempY = 0;
+		if(j == 0) tempX = x + 1, tempY = y + 1;
+		if(j == 1) tempX = x - 1, tempY = y + 1;
+		if(j == 2) tempX = x + 1, tempY = y - 1;
+		if(j == 3) tempX = x - 1, tempY = y - 1;
 
+		Nappula* nappula = asema->_lauta[tempY][tempX];
 
-	
+		if(tempX < 8 && tempX > -1 && tempY < 8 && tempY > -1)
+		{
+			// Jos edessä ei ole mitään, lisätään uusi siirto
+			if(nappula == NULL) lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+			else if(nappula != NULL)
+			{
+				if((vari == 0 && nappula->getVari()) == 1 || (vari == 1 && nappula->getVari() == 0)) // Jos vastustaja edessä syödään se ja lopetetaan looppi
+				{
+					lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+				}
+			}
+		}
+	}
+
+	for(int j = 0; j < 4; j++)
+	{
+		int tempX = 0;
+		int tempY = 0;
+		if(j == 0) tempX = x + 1, tempY = y;
+		if(j == 1) tempX = x - 1, tempY = y;
+		if(j == 2) tempX = x, tempY = y - 1;
+		if(j == 3) tempX = x, tempY = y + 1;
+
+		Nappula* nappula = asema->_lauta[tempY][tempX];
+
+		if(tempX < 8 && tempX > -1 && tempY < 8 && tempY > -1)
+		{
+			// Jos edessä ei ole mitään, lisätään uusi siirto
+			if(nappula == NULL) lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+			else if(nappula != NULL)
+			{
+				if((vari == 0 && nappula->getVari()) == 1 || (vari == 1 && nappula->getVari() == 0)) // Jos vastustaja edessä syödään se ja lopetetaan looppi
+					lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+			}
+		}
+
+	}
+
+	delete loppuRuutu;
 }
 
 

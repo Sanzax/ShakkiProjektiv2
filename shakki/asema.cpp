@@ -52,9 +52,6 @@ Asema::Asema()
 	
 	for (int i = 0; i < 8; i++)
 		_lauta[6][i] = Asema::ms;
-
-	_lauta[4][3] = Asema::vd;
-
 }
 
 
