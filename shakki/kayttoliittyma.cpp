@@ -91,6 +91,7 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 	std::string syote;
 	char nappula;
 	int alkuX, alkuY, loppuX, loppuY;
+	char viiva;
 	bool lyhytLinna = false, pitkaLinna = false;
 
 	while (true)
@@ -111,19 +112,33 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 
 		// Alustetaan koordinaatit syötteen mukaan
 		nappula = syote[0];
-		alkuX = syote[1] - 'a';	 //alkuX = syote[0] - 'a';
-		alkuY = syote[2] - '1';	 //alkuY = syote[1] - '1';
-		loppuX = syote[4] - 'a'; //loppuX = syote[3] - 'a';
-		loppuY = syote[5] - '1'; //loppuY = syote[4] - '1';
 
-		// Jos Nappula ei ole kelvollinen, kysytään siirtoa uudelleen
-		if (!(nappula == 'S' || nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T')) 
+		if(nappula != 'K' && nappula != 'D' && nappula != 'L' && nappula != 'T' && nappula != 'R')
 		{
-			std::wcout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
-			continue;
+			alkuX = syote[0] - 'a';	 //alkuX = syote[0] - 'a';
+			alkuY = syote[1] - '1';	 //alkuY = syote[1] - '1';
+			viiva = syote[2];
+			loppuX = syote[3] - 'a'; //loppuX = syote[3] - 'a';
+			loppuY = syote[4] - '1'; //loppuY = syote[4] - '1';
 		}
+		else
+		{
+			alkuX = syote[1] - 'a';	 //alkuX = syote[0] - 'a';
+			alkuY = syote[2] - '1';	 //alkuY = syote[1] - '1';
+			viiva = syote[3];
+			loppuX = syote[4] - 'a'; //loppuX = syote[3] - 'a';
+			loppuY = syote[5] - '1'; //loppuY = syote[4] - '1';
+
+			// Jos Nappula ei ole kelvollinen, kysytään siirtoa uudelleen
+			if(!(nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T'))
+			{
+				std::wcout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
+				continue;
+			}
+		}
+
 		// Jos viiva ei ole kelvollinen, kysytään siirtoa uudelleen
-		if(syote[3] != '-')
+		if(viiva != '-')
 		{
 			std::wcout << "Viivasyöte ei ollut kelvollinen" << std::endl;
 			continue;
