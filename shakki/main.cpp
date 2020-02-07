@@ -24,7 +24,6 @@ int main()
 	system("cls");
 	int koneenVari = peli.getKoneenVari();
 
-
 	Siirto siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
 	asema.paivitaAsema(&siirto);
 	Kayttoliittyma::getInstance()->piirraLauta();

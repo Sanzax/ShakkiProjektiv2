@@ -76,137 +76,80 @@ void Kayttoliittyma::piirraLauta()
 	muodollisesti korrekti (ei tarkista aseman laillisuutta)
 	Ottaa irti myös nappulan kirjaimen (K/D/L/R/T), tarkistaa että kirjain korrekti
 */
+
+
+bool onkoSyoteVirheellinen(const int arvo, const std::string& virheIlmoitus)
+{
+	for(int i = 0; i < 8; i++)
+		if(arvo == i) return false;
+	std::cout << virheIlmoitus << std::endl;
+	return true;
+}
+
 Siirto Kayttoliittyma::annaVastustajanSiirto()
 {
-	Siirto siirto;
 	std::string syote;
 	char nappula;
-	std::string aloitusKoordinaatti;
-	std::string lopetusKoordinaatti;
-	bool lyhytLinna = false;
-	bool pitkaLinna = false;
+	int alkuX, alkuY, loppuX, loppuY;
+	bool lyhytLinna = false, pitkaLinna = false;
 
-	while (true) {
-		std::cout << "Anna siirto" << std::endl;
+	while (true)
+	{
+		std::cout << "Anna siirto" << std::endl; //Kysytääm käyttäjältä siirtoa
 		std::cin >> syote;
-		nappula = syote[0];
 
-		if (syote == "O-O") {
+		if (syote == "O-O") // Jos syöte on lyhyt tai...
+		{
 			lyhytLinna = true;
 			break;
 		}
-		else if (syote == "O-O-O") {
+		else if (syote == "O-O-O")  // ...pitkä linna, asetetaan sopivat flagit
+		{							// ja hypätään suoraan siirron luontiin
 			pitkaLinna = true;
 			break;
 		}
 
-		if ( !(nappula == 'S' || nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T')) {
+		// Alustetaan koordinaatit syötteen mukaan
+		nappula = syote[0];
+		alkuX = syote[1] - 'a';	 //alkuX = syote[0] - 'a';
+		alkuY = syote[2] - '1';	 //alkuY = syote[1] - '1';
+		loppuX = syote[4] - 'a'; //loppuX = syote[3] - 'a';
+		loppuY = syote[5] - '1'; //loppuY = syote[4] - '1';
+
+		// Jos Nappula ei ole kelvollinen, kysytään siirtoa uudelleen
+		if (!(nappula == 'S' || nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T')) 
+		{
 			std::cout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
 			continue;
 		}
-
-
-		aloitusKoordinaatti = std::string(1, syote[1]) + std::string(1, syote[2]);
-		bool kirjainCheck = false;
-		bool numeroCheck = false;
-
-		for (int i = 0; i < 8; i++) {
-			if (aloitusKoordinaatti[0] == 'a' + i) {
-				break;
-			}
-
-			if (i == 7) {
-				std::cout << "Aloituskoordinaatin kirjainsyöte ei ollut kelvollinen" << std::endl;
-				kirjainCheck = true;
-			}
-
-		}
-
-		
-		for (int i = 0; i < 8; i++) {
-			if ((int)aloitusKoordinaatti[1] == 49 + i) {
-				break;
-			}
-
-			if (i == 7) {
-				std::cout << "Aloituskoordinaatin numerosyöte ei ollut kelvollinen" << std::endl;
-				numeroCheck = true;
-			}
-
-		}
-		
-		
-
-		if (kirjainCheck || numeroCheck) {
-			continue;
-		}
-
-		kirjainCheck = false;
-		numeroCheck = false;
-
-		//std::cout << aloitusKoordinaatti << std::endl;
-
-		if (syote[3] != '-') {
+		// Jos viiva ei ole kelvollinen, kysytään siirtoa uudelleen
+		if(syote[3] != '-')
+		{
 			std::cout << "Viivasyöte ei ollut kelvollinen" << std::endl;
 			continue;
 		}
-
-		lopetusKoordinaatti = std::string(1, syote[4]) + std::string(1, syote[5]);
-
-		for (int i = 0; i < 8; i++) {
-			if (lopetusKoordinaatti[0] == 'a' + i) {
-				break;
-			}
-
-			if (i == 7) {
-				std::cout << "Lopetuskoordinaatin kirjainsyöte ei ollut kelvollinen" << std::endl;
-				kirjainCheck = true;
-			}
-		}
-
-		for (int i = 0; i < 8; i++) {
-			if ((int)lopetusKoordinaatti[1] == 49 + i) {
-				break;
-			}
-
-			if (i == 7) {
-				std::cout << "Lopetuskoordinaatin numerosyöte ei ollut kelvollinen" << std::endl;
-				numeroCheck = true;
-			}
-
-		}
-
-		/*
-		lopetusKoordinaatti = std::string(1, syote[4]) + std::string(1, syote[5]);
-		std::cout << lopetusKoordinaatti << std::endl;
-		*/
-
-		if (kirjainCheck || numeroCheck) {
+		// Jos koordinaatit ei ole kelvollisia, kysytään siirota uudelleen
+		bool alkuXCheck = onkoSyoteVirheellinen(alkuX, "Alku koordinaatin kirjain on virheellinen");
+		bool alkuYCheck = onkoSyoteVirheellinen(alkuY, "Alku koordinaatin numero on virheellinen");
+		bool loppuXCheck = onkoSyoteVirheellinen(loppuX, "Loppu koordinaatin kirjain on virheellinen");
+		bool loppuYCheck = onkoSyoteVirheellinen(loppuY, "Loppu koordinaatin numero on virheellinen");
+		if(alkuXCheck || alkuYCheck || loppuXCheck || loppuYCheck)
 			continue;
-		}
 
-		break;
+		break; // Jos syöte oli kelvollinen lähdetään silmukasta
 	}
 
-	if (lyhytLinna || pitkaLinna) {
+	Siirto siirto;
+
+	if (lyhytLinna || pitkaLinna) // Jos siirto on linnoitus, tehdään sen mukainen siirto ja palautetaan se
+	{
 		siirto = Siirto(lyhytLinna,pitkaLinna);
 		return siirto;
 	}
 
-	int alkuX = aloitusKoordinaatti[0] - 'a';
-	std::cout << alkuX << std::endl;
-	int alkuY = aloitusKoordinaatti[1] - 49;
-	std::cout << alkuY << std::endl;
-
-	int lopetusX = lopetusKoordinaatti[0] - 'a';
-	std::cout << lopetusX << std::endl;
-	int lopetusY = lopetusKoordinaatti[1] - 49;
-	std::cout << lopetusY << std::endl;
-	
-	siirto = Siirto(Ruutu(alkuX,alkuY), Ruutu(lopetusX,lopetusY));
-
+	// Muuten tehdään siirto koordinaattien mukaan ja palautetaan se
+	siirto = Siirto(Ruutu(alkuX, alkuY), Ruutu(loppuX, loppuY));
 	return siirto;
-	
 }
 
 
