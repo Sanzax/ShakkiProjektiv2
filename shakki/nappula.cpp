@@ -18,8 +18,8 @@ Siirto lisaaSiirto(Ruutu& alkuRuutu, Ruutu& loppuRuutu, int x, int y, const char
 	loppuRuutu.setRivi(y);
 	loppuRuutu.setSarake(x);
 	Siirto siirto = Siirto(alkuRuutu, loppuRuutu);
-	std::wcout << nimi << " " << siirto.getAlkuruutu().getSarake() + 1 << ", " << siirto.getAlkuruutu().getRivi() + 1 <<
-		" : " << siirto.getLoppuruutu().getSarake() + 1 << ", " << siirto.getLoppuruutu().getRivi() + 1 << std::endl;
+	//std::wcout << nimi << " " << siirto.getAlkuruutu().getSarake() + 1 << ", " << siirto.getAlkuruutu().getRivi() + 1 <<
+	//	" : " << siirto.getLoppuruutu().getSarake() + 1 << ", " << siirto.getLoppuruutu().getRivi() + 1 << std::endl;
 
 
 	return siirto;
@@ -114,8 +114,8 @@ void Lahetti::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* ase
 	Ruutu* loppuRuutu = new Ruutu(0, 0);
 
 	const char* nimi = "";
-	if(asema->_lauta[alkuRuutu->getRivi()][alkuRuutu->getSarake()]->getKoodi() == VL ||
-	   asema->_lauta[alkuRuutu->getRivi()][alkuRuutu->getSarake()]->getKoodi() == ML)
+	if(asema->_lauta[y][x]->getKoodi() == VL ||
+	   asema->_lauta[y][x]->getKoodi() == ML)
 	{
 		nimi = "Lahetti";
 	}
@@ -159,7 +159,6 @@ void Daami::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema
 {
 	this->Lahetti::annaSiirrot(lista, alkuRuutu, asema, vari);
 	this->Torni::annaSiirrot(lista, alkuRuutu, asema, vari);
-
 }
 
 

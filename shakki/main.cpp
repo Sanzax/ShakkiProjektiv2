@@ -27,6 +27,9 @@ int main()
 
 
 	asema.annaLaillisetSiirrot(lista);
+
+
+
 	Siirto siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
 	asema.paivitaAsema(&siirto);
 	Kayttoliittyma::getInstance()->piirraLauta();

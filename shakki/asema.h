@@ -64,6 +64,8 @@ private:
 	double linjat(int);
 	bool onkoRuutuUhattu(Ruutu*, int vastustajanVari);
 	void annaLinnoitusSiirrot(std::list<Siirto>& lista, int vari);
+	void annaRaakaSiirrot(std::list<Siirto>& lista);
+	Ruutu Asema::etsiKuninkaanSijainti();
 
 	// Karsii siirrot, jotka jättävät oman K:n shakkiin.
 	void huolehdiKuninkaanShakeista(std::list<Siirto>& lista, int vari); 

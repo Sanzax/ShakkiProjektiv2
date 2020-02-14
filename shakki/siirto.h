@@ -14,11 +14,18 @@ public:
 	Siirto(Ruutu, Ruutu);
 	Siirto(){}
 	Siirto(bool, bool); // Linnoitus lyhesti (K-siipi) tai pitkästi (D-siipi?
-	Ruutu getAlkuruutu();
-	Ruutu getLoppuruutu();
-	bool onkoLyhytLinna();
-	bool onkoPitkaLinna();
+	Ruutu getAlkuruutu() const;
+	Ruutu getLoppuruutu() const;
+	bool onkoLyhytLinna() const;
+	bool onkoPitkaLinna() const;
 	Nappula* _miksikorotetaan = 0; 
+
+	bool operator==(const Siirto& s)
+	{
+		if(_alkuRuutu == s.getAlkuruutu() && _loppuRuutu == s.getLoppuruutu() && _lyhytLinna == s.onkoLyhytLinna() && _pitkaLinna == s.onkoPitkaLinna())
+			return true;
+		return false;
+	}
 
 private:
 	Ruutu _alkuRuutu;

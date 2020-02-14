@@ -28,30 +28,36 @@ Asema::Asema()
 		for (int i = 0; i < 8; i++)
 			_lauta[i][j] = NULL;
 
-	// Asetetaan alkuaseman mukaisesti nappulat ruuduille
-	_lauta[0][0] = Asema::vt;
-	_lauta[0][1] = Asema::vr;
-	_lauta[0][2] = Asema::vl;
-	_lauta[0][3] = Asema::vd;
-	_lauta[0][4] = Asema::vk;
-	_lauta[0][5] = Asema::vl;
-	_lauta[0][6] = Asema::vr;
-	_lauta[0][7] = Asema::vt;
-	for (int i = 0; i < 8; i++)
-		_lauta[1][i] = Asema::vs;
+	//// Asetetaan alkuaseman mukaisesti nappulat ruuduille
+	//_lauta[0][0] = Asema::vt;
+	//_lauta[0][1] = Asema::vr;
+	//_lauta[0][2] = Asema::vl;
+	//_lauta[0][3] = Asema::vd;
+	//_lauta[0][4] = Asema::vk;
+	//_lauta[0][5] = Asema::vl;
+	//_lauta[0][6] = Asema::vr;
+	//_lauta[0][7] = Asema::vt;
+	//for (int i = 0; i < 8; i++)
+	//	_lauta[1][i] = Asema::vs;
 
-	_lauta[7][0] = Asema::mt;
-	_lauta[7][1] = Asema::mr;
-	_lauta[7][2] = Asema::ml;
-	_lauta[7][3] = Asema::md;
-	_lauta[7][4] = Asema::mk;
-	_lauta[7][5] = Asema::ml;
-	_lauta[7][6] = Asema::mr;
-	_lauta[7][7] = Asema::mt;
+	//_lauta[7][0] = Asema::mt;
+	//_lauta[7][1] = Asema::mr;
+	//_lauta[7][2] = Asema::ml;
+	//_lauta[7][3] = Asema::md;
+	//_lauta[7][4] = Asema::mk;
+	//_lauta[7][5] = Asema::ml;
+	//_lauta[7][6] = Asema::mr;
+	//_lauta[7][7] = Asema::mt;
 
-	
-	for (int i = 0; i < 8; i++)
-		_lauta[6][i] = Asema::ms;
+	//
+	//for (int i = 0; i < 8; i++)
+	//	_lauta[6][i] = Asema::ms;
+
+	//_lauta[0][0] = Asema::vk; //Toimiva tilanne
+	//_lauta[3][0] = Asema::mt;
+
+	_lauta[2][1] = Asema::vk;
+	_lauta[2][7] = Asema::mt;
 }
 
 
@@ -347,6 +353,8 @@ MinMaxPaluu Asema::mini(int syvyys)
 bool Asema::onkoRuutuUhattu(Ruutu* ruutu, int vastustajanVari)
 {
 
+
+
 	return false;
 }
 
@@ -356,8 +364,7 @@ void Asema::huolehdiKuninkaanShakeista(std::list<Siirto>& lista, int vari)
 
 }
 
-
-void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista) 
+void Asema::annaRaakaSiirrot(std::list<Siirto>& lista)
 {
 	for(int y = 0; y < 8; y++)
 	{
@@ -365,11 +372,65 @@ void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista)
 		{
 			if(_lauta[y][x] != NULL && _lauta[y][x]->getVari() == _siirtovuoro)
 			{
-				Ruutu* alkuRuutu = new Ruutu(x, y);
-				_lauta[y][x]->annaSiirrot(lista, alkuRuutu, this, _siirtovuoro);
-				delete alkuRuutu;
+				Ruutu alkuRuutu = Ruutu(x, y);
+				_lauta[y][x]->annaSiirrot(lista, &alkuRuutu, this, _siirtovuoro);
 			}
-				
+
 		}
 	}
+}
+
+Ruutu Asema::etsiKuninkaanSijainti()
+{
+	Ruutu kuninkaanSijainti;
+	for(int y = 0; y < 8; y++)
+	{
+		for(int x = 0; x < 8; x++)
+		{
+			if(_lauta[y][x] != NULL && ((_lauta[y][x]->getKoodi() == MK && _siirtovuoro == 0) || (_lauta[y][x]->getKoodi() == VK && _siirtovuoro == 1)))
+			{
+				kuninkaanSijainti = Ruutu(x, y);
+			}
+			
+		}
+	}
+	return kuninkaanSijainti;
+}
+
+
+void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista) 
+{
+	std::list<Siirto> raakaSiirrot;
+	annaRaakaSiirrot(raakaSiirrot);
+
+	std::list<Siirto> laillisetSiirrot;
+
+	for(Siirto s : raakaSiirrot)
+	{
+		Asema vastustajanVuoroAsema = *this;
+		vastustajanVuoroAsema.paivitaAsema(&s);
+		vastustajanVuoroAsema.setSiirtovuoro(1);//_siirtovuoro == 0 ? 1 : 0
+
+		Ruutu kuninkaanSijainti = vastustajanVuoroAsema.etsiKuninkaanSijainti();
+
+
+		std::list<Siirto> vastustajanRaakaSiirrot;
+		vastustajanVuoroAsema.annaRaakaSiirrot(vastustajanRaakaSiirrot);
+
+		for(Siirto vs : vastustajanRaakaSiirrot)
+		{
+			std::wcout <<"Kuninkaan sijainti " << kuninkaanSijainti.getSarake() << ", " << kuninkaanSijainti.getRivi() << std::endl;
+			std::wcout << "Vastustajan siirron loppuruutu "<< vs.getLoppuruutu().getSarake() << ", " << vs.getLoppuruutu().getRivi() << std::endl;
+			if(!(vs.getLoppuruutu().getRivi() == kuninkaanSijainti.getRivi() && vs.getLoppuruutu().getSarake() == kuninkaanSijainti.getSarake()))
+			{
+				std::wcout << "Laillinen"  << std::endl;
+				laillisetSiirrot.push_back(s);
+				break;
+			}
+		}
+
+	}
+
+	lista = laillisetSiirrot;
+
 }

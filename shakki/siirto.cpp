@@ -15,25 +15,25 @@ Siirto::Siirto(bool lyhytLinna, bool pitkaLinna)
 }
 
 
-Ruutu Siirto::getAlkuruutu()
+Ruutu Siirto::getAlkuruutu() const
 {
 	return _alkuRuutu;
 }
 
 
-Ruutu Siirto::getLoppuruutu()
+Ruutu Siirto::getLoppuruutu() const
 {
 	return _loppuRuutu;
 }
 
 
-bool Siirto::onkoLyhytLinna() 
+bool Siirto::onkoLyhytLinna() const
 {
 	return _lyhytLinna;
 }
 
 
-bool Siirto::onkoPitkaLinna() 
+bool Siirto::onkoPitkaLinna() const
 {
 	return _pitkaLinna;
 }
