@@ -56,17 +56,51 @@ Asema::Asema()
 	//_lauta[0][0] = Asema::vk; //Toimiva tilanne
 	//_lauta[3][0] = Asema::mt;
 
-	_lauta[2][1] = Asema::vk;
-	_lauta[2][7] = Asema::mt;
+	_lauta[6][0] = Asema::vs;
 }
 
 
 
 void Asema::paivitaAsema(Siirto *siirto)
 {
+	Nappula *siirrettava = _lauta[siirto->getAlkuruutu().getRivi()][siirto->getAlkuruutu().getSarake()];
 
+	/*if(siirrettava->getKoodi() == VS && siirto->getLoppuruutu().getRivi() == 7)
+	{
+		while(true)
+		{
+			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
+			std::wstring vastaus;
+			std::wcin >> vastaus;
+			if(vastaus == L"D") siirrettava = vd;
+			else if(vastaus == L"T") siirrettava = vt;
+			else if(vastaus == L"L") siirrettava = vl;
+			else if(vastaus == L"R") siirrettava = vr;
+			else continue;
+
+			break;
+		}
+	}
+	else if(siirrettava->getKoodi() == MS && siirto->getLoppuruutu().getRivi() == 0)
+	{
+		while(true)
+		{
+			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
+			std::wstring vastaus;
+			std::wcin >> vastaus;
+			if(vastaus == L"D") siirrettava = md;
+			else if(vastaus == L"T") siirrettava = mt;
+			else if(vastaus == L"L") siirrettava = ml;
+			else if(vastaus == L"R") siirrettava = mr;
+			else continue;
+
+			break;
+		}
+	}*/
 	// Kaksoisaskel-lippu on oletusarvoisesti pois päältä.
 	// Asetetaan myöhemmin, jos tarvii.
+
+
 
 
 	//Tarkastetaan on siirto lyhyt linna
@@ -87,9 +121,7 @@ void Asema::paivitaAsema(Siirto *siirto)
 
 		//Ottaa siirron alkuruudussa olleen nappulan talteen 
 
-	Nappula *siirrettava;
 
-	siirrettava = _lauta[siirto->getAlkuruutu().getRivi()][siirto->getAlkuruutu().getSarake()];
 
 
 	//Laittaa talteen otetun nappulan uuteen ruutuun
@@ -98,7 +130,7 @@ void Asema::paivitaAsema(Siirto *siirto)
 
 	// Tarkistetaan oliko sotilaan kaksoisaskel
 
-	if (siirrettava->getKoodi() == VS || siirrettava->getKoodi() == MS) {
+	if (siirrettava != NULL && siirrettava->getKoodi() == VS || siirrettava->getKoodi() == MS) {
 		if ((abs(siirto->getAlkuruutu().getSarake() - siirto->getLoppuruutu().getSarake())) == 2) {
 			kaksoisaskelSarakkeella = 1; // (asetetaan kaksoisaskel-lippu)
 		}
@@ -130,29 +162,29 @@ void Asema::paivitaAsema(Siirto *siirto)
 
 
 	// katsotaan jos liikkunut nappula on kuningas niin muutetaan onkoKuningasLiikkunut arvo (molemmille väreille)
-	if (siirrettava->getKoodi() == VK) {
+	if (siirrettava != NULL && siirrettava->getKoodi() == VK) {
 		_onkoValkeaKuningasLiikkunut = true;
 	}
 
-	else if (siirrettava->getKoodi() == MK) {
+	else if (siirrettava != NULL && (siirrettava->getKoodi() == MK)) {
 		_onkoMustaKuningasLiikkunut = true;
 	}
 
 	// katsotaan jos liikkunut nappula on torni niin muutetaan onkoTorniLiikkunut arvo (molemmille väreille ja molemmille torneille)
 
-	if (siirrettava->getKoodi() == MT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 7) {
+	if (siirrettava != NULL && siirrettava->getKoodi() == MT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 7) {
 		_onkoMustaDTliikkunut = true;
 	}
 
-	else if (siirrettava->getKoodi() == MT && siirto->getAlkuruutu().getSarake() == 7 && siirto->getAlkuruutu().getRivi() == 7) {
+	else if (siirrettava != NULL && siirrettava->getKoodi() == MT && siirto->getAlkuruutu().getSarake() == 7 && siirto->getAlkuruutu().getRivi() == 7) {
 		_onkoMustaKTliikkunut = true;
 	}
 
-	else if (siirrettava->getKoodi() == VT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 0) {
+	else if (siirrettava != NULL && siirrettava->getKoodi() == VT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 0) {
 		_onkoValkeaDTliikkunut = true;
 	}
 
-	else if (siirrettava->getKoodi() == VT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 7) {
+	else if (siirrettava != NULL && siirrettava->getKoodi() == VT && siirto->getAlkuruutu().getSarake() == 0 && siirto->getAlkuruutu().getRivi() == 7) {
 		_onkoValkeaKTliikkunut = true;
 	}
 
@@ -405,14 +437,14 @@ void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista)
 
 	std::list<Siirto> laillisetSiirrot;
 
+	// Suodatetaan siirrot joissa kuningas tulisi uhatuksi
 	for(Siirto s : raakaSiirrot)
 	{
 		Asema vastustajanVuoroAsema = *this;
 		vastustajanVuoroAsema.paivitaAsema(&s);
-		vastustajanVuoroAsema.setSiirtovuoro(1);//_siirtovuoro == 0 ? 1 : 0
+		vastustajanVuoroAsema.setSiirtovuoro(_siirtovuoro == 0 ? 1 : 0);
 
 		Ruutu kuninkaanSijainti = vastustajanVuoroAsema.etsiKuninkaanSijainti();
-
 
 		std::list<Siirto> vastustajanRaakaSiirrot;
 		vastustajanVuoroAsema.annaRaakaSiirrot(vastustajanRaakaSiirrot);
@@ -428,9 +460,11 @@ void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista)
 				break;
 			}
 		}
-
 	}
 
+
+
+	
 	lista = laillisetSiirrot;
 
 }

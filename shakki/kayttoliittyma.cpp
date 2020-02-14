@@ -162,8 +162,44 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 		return siirto;
 	}
 
-	// Muuten tehdään siirto koordinaattien mukaan ja palautetaan se
+	// Muuten luodaan siirto koordinaattien mukaan ja palautetaan se
 	siirto = Siirto(Ruutu(alkuX, alkuY), Ruutu(loppuX, loppuY));
+
+	Nappula* siirrettava = _asema->_lauta[alkuY][alkuX];
+
+	if(siirrettava != NULL && siirrettava->getKoodi() == VS && siirto.getLoppuruutu().getRivi() == 7)
+	{
+		while(true)
+		{
+			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
+			std::wstring vastaus;
+			std::wcin >> vastaus;
+			if(vastaus == L"D") _asema->_lauta[alkuY][alkuX] = Asema::vd;
+			else if(vastaus == L"T") _asema->_lauta[alkuY][alkuX] = Asema::vt;
+			else if(vastaus == L"L") _asema->_lauta[alkuY][alkuX] = Asema::vl;
+			else if(vastaus == L"R") _asema->_lauta[alkuY][alkuX] = Asema::vr;
+			else continue;
+
+			break;
+		}
+	}
+	else if(siirrettava != NULL && siirrettava->getKoodi() == MS && siirto.getLoppuruutu().getRivi() == 0)
+	{
+		while(true)
+		{
+			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
+			std::wstring vastaus;
+			std::wcin >> vastaus;
+			if(vastaus == L"D") siirrettava = Asema::md;
+			else if(vastaus == L"T") siirrettava = Asema::mt;
+			else if(vastaus == L"L") siirrettava = Asema::ml;
+			else if(vastaus == L"R") siirrettava = Asema::mr;
+			else continue;
+
+			break;
+		}
+	}
+
 	return siirto;
 }
 

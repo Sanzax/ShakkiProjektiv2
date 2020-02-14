@@ -25,10 +25,7 @@ int main()
 	system("cls");
 	int koneenVari = peli.getKoneenVari();
 
-
 	asema.annaLaillisetSiirrot(lista);
-
-
 
 	Siirto siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
 	asema.paivitaAsema(&siirto);
