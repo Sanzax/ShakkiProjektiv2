@@ -241,6 +241,19 @@ void Sotilas::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* ase
 		
 		if(asema->_lauta[y + 1][x - 1] != NULL && asema->_lauta[y + 1][x - 1]->getVari() == 1) // Syönti vasemmalle
 			lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x -1, y + 1, "Sotilas"));
+
+		//Ohesta lyönnit
+		if(asema->_lauta[y][x - 1] != NULL && asema->_lauta[y][x - 1]->getKoodi() == MS && asema->kaksoisaskelSarakkeella == x-1)
+		{
+			lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x - 1, y + 1, "Sotilas"));
+			std::wcout << "ohestalyonti\n";
+		}
+		else if(asema->_lauta[y][x + 1] != NULL && asema->_lauta[y][x + 1]->getKoodi() == MS && asema->kaksoisaskelSarakkeella == x + 1)
+		{
+			lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x + 1, y + 1, "Sotilas"));
+			std::wcout << "ohestalyonti\n";
+		}
+
 	}
 	else
 	{
@@ -259,6 +272,18 @@ void Sotilas::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* ase
 
 		if(asema->_lauta[y - 1][x - 1] != NULL && asema->_lauta[y - 1][x - 1]->getVari() == 0) // Syönti vasemmalle
 			lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x -1, y - 1, "Sotilas"));
+
+		//Ohesta lyönnit
+		if(asema->_lauta[y][x - 1] != NULL && asema->_lauta[y][x - 1]->getKoodi() == VS && asema->kaksoisaskelSarakkeella == x - 1)
+		{
+			lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x - 1, y - 1, "Sotilas"));
+			std::wcout << "ohestalyonti\n";
+		}
+		else if(asema->_lauta[y][x + 1] != NULL && asema->_lauta[y][x + 1]->getKoodi() == VS && asema->kaksoisaskelSarakkeella == x + 1)
+		{
+			lista.push_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x + 1, y - 1, "Sotilas"));
+			std::wcout << "ohestalyonti\n";
+		}
 
 	}
 

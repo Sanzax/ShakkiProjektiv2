@@ -62,8 +62,8 @@ private:
 	bool onkoAvausTaiKeskipeli(int);
 	double nappuloitaKeskella(int);
 	double linjat(int);
-	bool onkoRuutuUhattu(Ruutu*, int vastustajanVari);
-	void annaLinnoitusSiirrot(std::list<Siirto>& lista, int vari);
+	bool onkoRuutuUhattu(Ruutu*, std::list<Siirto>);
+	void annaLinnoitusSiirrot(std::list<Siirto>& lista, std::list<Siirto>, int vari);
 	void annaRaakaSiirrot(std::list<Siirto>& lista);
 	Ruutu Asema::etsiKuninkaanSijainti();
 

@@ -5,6 +5,8 @@ Siirto::Siirto(Ruutu alkuRuutu, Ruutu loppuRuutu)
 {
 	_alkuRuutu = alkuRuutu;
 	_loppuRuutu = loppuRuutu;
+	_lyhytLinna = false;
+	_pitkaLinna = false;
 }
 
 
