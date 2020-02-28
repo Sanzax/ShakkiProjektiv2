@@ -6,7 +6,7 @@
 #include <iostream>
 #include "kayttoliittyma.h"
 
-using namespace std;
+//using namespace std;
 
 
 Kayttoliittyma* Kayttoliittyma::instance = 0;
@@ -86,7 +86,7 @@ bool onkoSyoteVirheellinen(const int arvo, const char* virheIlmoitus)
 	return true;
 }
 
-Siirto Kayttoliittyma::annaVastustajanSiirto()
+Siirto Kayttoliittyma::annaVastustajanSiirto(std::list<Siirto>& laillisetSiirrot)
 {
 	std::string syote;
 	char nappula;
@@ -151,9 +151,38 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 		if(alkuXCheck || alkuYCheck || loppuXCheck || loppuYCheck)
 			continue;
 
+		std::wcout << "AlkuX" << alkuX << std::endl;
+		std::wcout << "AlkuY" << alkuY << std::endl;
+		std::wcout << "LoppuX" << loppuX << std::endl;
+		std::wcout << "LoppuY" << loppuY << std::endl;
+
+		/* IN PROGRESS */
+
+		/*
+		bool laitonSiirto = false;
+
+		for (Siirto s : laillisetSiirrot)
+		{
+			std::wcout << s.getAlkuruutu().getSarake() << " ::: " << alkuX << std::endl;
+			std::wcout << s.getAlkuruutu().getRivi() << " ::: " << alkuY << std::endl;
+			std::wcout << s.getLoppuruutu().getSarake() << " ::: " << loppuX << std::endl;
+			std::wcout << s.getLoppuruutu().getRivi() << " ::: " << loppuY << std::endl;
+
+			if (s.getAlkuruutu().getSarake() != alkuX || s.getAlkuruutu().getRivi() != alkuY || s.getLoppuruutu().getSarake() != loppuX || s.getLoppuruutu().getRivi() || loppuY) {
+
+				std::wcout << "Syöte on laiton" << std::endl;
+				laitonSiirto == true;
+			}
+
+			if (laitonSiirto) {
+				continue;
+			}
+		}
+		*/
+
 		break; // Jos syöte oli kelvollinen lähdetään silmukasta
 	}
-
+	
 	Siirto siirto;
 
 	if (lyhytLinna || pitkaLinna) // Jos siirto on linnoitus, tehdään sen mukainen siirto ja palautetaan se
@@ -190,10 +219,10 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
 			std::wstring vastaus;
 			std::wcin >> vastaus;
-			if(vastaus == L"D") siirrettava = Asema::md;
-			else if(vastaus == L"T") siirrettava = Asema::mt;
-			else if(vastaus == L"L") siirrettava = Asema::ml;
-			else if(vastaus == L"R") siirrettava = Asema::mr;
+			if(vastaus == L"D") _asema->_lauta[alkuY][alkuX] = Asema::md;
+			else if(vastaus == L"T") _asema->_lauta[alkuY][alkuX] = Asema::mt;
+			else if(vastaus == L"L") _asema->_lauta[alkuY][alkuX] = Asema::ml;
+			else if(vastaus == L"R") _asema->_lauta[alkuY][alkuX] = Asema::mr;
 			else continue;
 
 			break;
@@ -202,7 +231,6 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 
 	return siirto;
 }
-
 
 int Kayttoliittyma::kysyVastustajanVari()
 {

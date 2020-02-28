@@ -8,13 +8,10 @@
 #include "Siirto.h"
 #include "asema.h"
 
-using namespace std; 
 
 int main()
 {
 	_setmode(_fileno(stdout), _O_U16TEXT);
-	wcout << "HeippariShakki\n";
-	wcout << "Tervetuloa pelaamaan!\n";
 	int lopetus = 100;
 	Asema asema;
 	Kayttoliittyma::getInstance()->aseta_asema(&asema);
@@ -38,9 +35,10 @@ int main()
 	{
 		lista.clear();
 		Kayttoliittyma::getInstance()->piirraLauta();
-		wcout << "\n";
+		std::wcout << "\n";
 		// Tarkasta onko peli loppu?
 		asema.annaLaillisetSiirrot(lista);
+
 		if(lista.size() == 0)
 		{
 			lopetus = 0;
@@ -48,7 +46,7 @@ int main()
 			continue;
 		}
 		Siirto siirto;
-		siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+		siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto(lista);
 		/*
 		if (asema.getSiirtovuoro() == koneenVari) {
 			//MinMaxPaluu paluu;

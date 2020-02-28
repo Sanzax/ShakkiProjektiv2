@@ -74,6 +74,8 @@ Asema::Asema()
 
 	_lauta[5][0] = Asema::ml;
 
+	_lauta[1][2] = Asema::ms;
+
 	//_lauta[7][7] = Asema::mt;
 }
 
