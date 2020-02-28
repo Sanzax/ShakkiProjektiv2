@@ -93,6 +93,8 @@ void Asema::paivitaAsema(Siirto *siirto)
 			_lauta[0][6] = vk; // kuningas uudelle paikalle
 			_lauta[0][7] = NULL; // tornin paikalle tyhj‰
 			_lauta[0][5] = vt; // torni uudella paikalle
+			_onkoValkeaKuningasLiikkunut = true;
+			_onkoValkeaKTliikkunut = true;
 		}
 		if(_siirtovuoro == 1)
 		{
@@ -100,6 +102,8 @@ void Asema::paivitaAsema(Siirto *siirto)
 			_lauta[7][6] = mk; // kuningas uudelle paikalle
 			_lauta[7][7] = NULL; // tornin paikalle tyhj‰
 			_lauta[7][5] = mt; // torni uudella paikalle
+			_onkoMustaKuningasLiikkunut = true;
+			_onkoMustaKTliikkunut = true;
 		}
 	}
 
@@ -112,6 +116,8 @@ void Asema::paivitaAsema(Siirto *siirto)
 			_lauta[0][2] = vk; // kuningas uudelle paikalle
 			_lauta[0][0] = NULL; // tornin paikalle tyhj‰
 			_lauta[0][3] = vt; // torni uudella paikalle
+			_onkoValkeaKuningasLiikkunut = true;
+			_onkoValkeaDTliikkunut = true;
 		}
 		if(_siirtovuoro == 1)
 		{
@@ -119,6 +125,8 @@ void Asema::paivitaAsema(Siirto *siirto)
 			_lauta[7][2] = mk; // kuningas uudelle paikalle
 			_lauta[7][0] = NULL; // tornin paikalle tyhj‰
 			_lauta[7][3] = mt; // torni uudella paikalle
+			_onkoMustaKuningasLiikkunut = true;
+			_onkoMustaDTliikkunut = true;
 		}
 
 	}
@@ -371,11 +379,29 @@ MinMaxPaluu Asema::mini(int syvyys)
 }
 
 
-bool Asema::onkoRuutuUhattu(Ruutu* ruutu, std::list<Siirto> siirrot)
+bool Asema::onkoRuutuUhattu(Ruutu* ruutu, int vastustajanVari)
 {
-	for(Siirto s : siirrot)
-		if(s.getLoppuruutu().getRivi() == ruutu->getRivi() && s.getLoppuruutu().getSarake() == ruutu->getSarake())
+	std::list<Siirto> vastustajaSiirrotLista;
+	//V‰reitt‰in k‰yd‰‰n l‰pi kaikki ruudut ja niiss‰ olevan nappulan siirrot ker‰t‰‰n vastustajan siirtolistaan
+	for(int i = 0; i < 8; i++)
+	{
+		for(int j = 0; j < 8; j++)
+		{
+			if(this->_lauta[i][j] == NULL)
+				continue;
+			if(this->_lauta[i][j]->getVari() == vastustajanVari)
+				this->_lauta[i][j]->annaSiirrot(vastustajaSiirrotLista, &Ruutu(j, i), this, vastustajanVari); // myˆh.sidonta
+		}
+	}
+
+	// K‰yd‰‰n vastustajaSiirtoLista l‰pi ja jos sielt‰ lˆytyy tarkasteltava ruutu niin tiedet‰‰n sen olevan uhattu
+	for(Siirto s : vastustajaSiirrotLista)
+	{
+		if(ruutu->getSarake() == s.getLoppuruutu().getSarake() && ruutu->getRivi() == s.getLoppuruutu().getRivi())
+		{
 			return true;
+		}
+	}
 	return false;
 }
 
@@ -385,34 +411,36 @@ void Asema::huolehdiKuninkaanShakeista(std::list<Siirto>& lista, int vari)
 
 }
 
-void Asema::annaLinnoitusSiirrot(std::list<Siirto>& lista, std::list<Siirto> vastustajanSiirrot, int vari)
+void Asema::annaLinnoitusSiirrot(std::list<Siirto>& lista, int vastustajanVari)
 {
-	if(vari == 0)
+	if(vastustajanVari == 1)
 	{
+		std::wcout << "valkoinen" << std::endl;
 		if(_onkoValkeaKuningasLiikkunut && (_onkoValkeaDTliikkunut || _onkoValkeaKTliikkunut))
 			return;
 
-		if(_lauta[0][5] == NULL && _lauta[0][6] == NULL && onkoRuutuUhattu(&Ruutu(5, 0), vastustajanSiirrot))
+		if(_lauta[0][5] == NULL && _lauta[0][6] == NULL && !onkoRuutuUhattu(&Ruutu(5, 0), vastustajanVari ))
 		{
-			std::wcout << "v lyhyt linna\n";
 			lista.push_back(Siirto(true, false));
+			std::wcout << "l" << std::endl;
 		}
-		if(_lauta[0][1] == NULL && _lauta[0][2] == NULL && _lauta[0][3] == NULL && onkoRuutuUhattu(&Ruutu(3, 0), vastustajanSiirrot))
+		if(_lauta[0][1] == NULL && _lauta[0][2] == NULL && _lauta[0][3] == NULL && !onkoRuutuUhattu(&Ruutu(3, 0), vastustajanVari))
 		{
 			lista.push_back(Siirto(false, true));
-			std::wcout << "v pitka linna\n";
+			std::wcout << "p" << std::endl;
 		}
 	}
-	else
+	else if(vastustajanVari == 0)
 	{
+		std::wcout << "musta" << std::endl;
 		if(_onkoMustaKuningasLiikkunut && (_onkoMustaDTliikkunut || _onkoMustaKTliikkunut))
 			return;
 
-		if(_lauta[7][5] == NULL && _lauta[7][6] == NULL && onkoRuutuUhattu(&Ruutu(5, 7), vastustajanSiirrot))
+		if(_lauta[7][5] == NULL && _lauta[7][6] == NULL && !onkoRuutuUhattu(&Ruutu(5, 7), vastustajanVari))
 		{
 			lista.push_back(Siirto(true, false));
 		}
-		if(_lauta[7][1] == NULL && _lauta[7][2] == NULL && _lauta[7][3] == NULL && onkoRuutuUhattu(&Ruutu(3, 7), vastustajanSiirrot))
+		if(_lauta[7][1] == NULL && _lauta[7][2] == NULL && _lauta[7][3] == NULL && !onkoRuutuUhattu(&Ruutu(3, 7), vastustajanVari))
 		{
 			lista.push_back(Siirto(false, true));
 		}
@@ -458,9 +486,10 @@ void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista)
 {
 	std::list<Siirto> raakaSiirrot;
 	annaRaakaSiirrot(raakaSiirrot);
+	annaLinnoitusSiirrot(raakaSiirrot, _siirtovuoro == 0 ? 1 : 0);
 
 	std::list<Siirto> laillisetSiirrot;
-
+	
 	// Suodatetaan siirrot joissa kuningas tulisi uhatuksi
 	for(Siirto s : raakaSiirrot)
 	{
@@ -479,8 +508,6 @@ void Asema::annaLaillisetSiirrot(std::list<Siirto>& lista)
 			//std::wcout << "Vastustajan siirron loppuruutu "<< vs.getLoppuruutu().getSarake() << ", " << vs.getLoppuruutu().getRivi() << std::endl;
 			if(!(vs.getLoppuruutu().getRivi() == kuninkaanSijainti.getRivi() && vs.getLoppuruutu().getSarake() == kuninkaanSijainti.getSarake()))
 			{
-				std::wcout << "Siirto: " << s.getAlkuruutu().getSarake() << ", " << s.getAlkuruutu().getRivi() << " : " 
-					<< s.getLoppuruutu().getSarake() << ", " << s.getLoppuruutu().getRivi() << "\n";
 				laillisetSiirrot.push_back(s);
 				break;
 			}

@@ -39,6 +39,18 @@ int main()
 		// Tarkasta onko peli loppu?
 		asema.annaLaillisetSiirrot(lista);
 
+		std::wcout << "Lailliset siirrot:" << std::endl;
+		for(Siirto s : lista)
+		{
+			if(s.onkoPitkaLinna())
+				std::wcout << "Pitkalinna" << std::endl;
+			else if(s.onkoLyhytLinna())
+				std::wcout << "Lyhytlinna" << std::endl;
+			else
+				std::wcout << "Siirto: " << s.getAlkuruutu().getSarake() << ", " << s.getAlkuruutu().getRivi() <<
+				" : " << s.getLoppuruutu().getSarake() << ", " << s.getLoppuruutu().getRivi() << std::endl;
+		}
+
 		if(lista.size() == 0)
 		{
 			lopetus = 0;

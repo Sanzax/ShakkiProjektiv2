@@ -33,8 +33,8 @@ void Torni::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema
 	Ruutu* loppuRuutu = new Ruutu(0, 0);
 
 	const char* nimi = "";
-	if(asema->_lauta[alkuRuutu->getRivi()][alkuRuutu->getSarake()]->getKoodi() == VT ||
-	   asema->_lauta[alkuRuutu->getRivi()][alkuRuutu->getSarake()]->getKoodi() == MT)
+	if(asema->_lauta[y][x] != NULL && (asema->_lauta[alkuRuutu->getRivi()][alkuRuutu->getSarake()]->getKoodi() == VT ||
+	   asema->_lauta[alkuRuutu->getRivi()][alkuRuutu->getSarake()]->getKoodi() == MT))
 	{
 		nimi = "Torni";
 	}
@@ -114,8 +114,8 @@ void Lahetti::annaSiirrot(std::list<Siirto>& lista, Ruutu* alkuRuutu, Asema* ase
 	Ruutu* loppuRuutu = new Ruutu(0, 0);
 
 	const char* nimi = "";
-	if(asema->_lauta[y][x]->getKoodi() == VL ||
-	   asema->_lauta[y][x]->getKoodi() == ML)
+	if(asema->_lauta[y][x] != NULL && (asema->_lauta[y][x]->getKoodi() == VL ||
+	   asema->_lauta[y][x]->getKoodi() == ML))
 	{
 		nimi = "Lahetti";
 	}
