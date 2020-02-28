@@ -36,47 +36,31 @@ Asema::Asema()
 		for (int i = 0; i < 8; i++)
 			_lauta[i][j] = NULL;
 
-	//// Asetetaan alkuaseman mukaisesti nappulat ruuduille
-	//_lauta[0][0] = Asema::vt;
-	//_lauta[0][1] = Asema::vr;
-	//_lauta[0][2] = Asema::vl;
-	//_lauta[0][3] = Asema::vd;
-	//_lauta[0][4] = Asema::vk;
-	//_lauta[0][5] = Asema::vl;
-	//_lauta[0][6] = Asema::vr;
-	//_lauta[0][7] = Asema::vt;
-	//for (int i = 0; i < 8; i++)
-	//	_lauta[1][i] = Asema::vs;
-
-	//_lauta[7][0] = Asema::mt;
-	//_lauta[7][1] = Asema::mr;
-	//_lauta[7][2] = Asema::ml;
-	//_lauta[7][3] = Asema::md;
-	//_lauta[7][4] = Asema::mk;
-	//_lauta[7][5] = Asema::ml;
-	//_lauta[7][6] = Asema::mr;
-	//_lauta[7][7] = Asema::mt;
-
-	//
-	//for (int i = 0; i < 8; i++)
-	//	_lauta[6][i] = Asema::ms;
-
-	//_lauta[0][0] = Asema::vk; //Toimiva tilanne
-	//_lauta[3][0] = Asema::mt;
-
+	// Asetetaan alkuaseman mukaisesti nappulat ruuduille
 	_lauta[0][0] = Asema::vt;
+	_lauta[0][1] = Asema::vr;
+	_lauta[0][2] = Asema::vl;
+	_lauta[0][3] = Asema::vd;
 	_lauta[0][4] = Asema::vk;
+	_lauta[0][5] = Asema::vl;
+	_lauta[0][6] = Asema::vr;
 	_lauta[0][7] = Asema::vt;
+	for (int i = 0; i < 8; i++)
+		_lauta[1][i] = Asema::vs;
 
 	_lauta[7][0] = Asema::mt;
+	_lauta[7][1] = Asema::mr;
+	_lauta[7][2] = Asema::ml;
+	_lauta[7][3] = Asema::md;
 	_lauta[7][4] = Asema::mk;
+	_lauta[7][5] = Asema::ml;
+	_lauta[7][6] = Asema::mr;
 	_lauta[7][7] = Asema::mt;
 
-	_lauta[5][0] = Asema::ml;
+	
+	for (int i = 0; i < 8; i++)
+		_lauta[6][i] = Asema::ms;
 
-	_lauta[1][2] = Asema::ms;
-
-	//_lauta[7][7] = Asema::mt;
 }
 
 
@@ -142,9 +126,7 @@ void Asema::paivitaAsema(Siirto *siirto)
 		if(siirrettava != NULL && siirrettava->getKoodi() == VS || siirrettava->getKoodi() == MS)
 			if((abs(alkuY - loppuY)) == 2)
 			{
-				std::wcout << "Kaksoisaskel\n";
 				kaksoisaskelSarakkeella = alkuX; // (asetetaan kaksoisaskel-lippu)
-				std::wcout << kaksoisaskelSarakkeella << "\n";
 			}
 
 
@@ -254,20 +236,51 @@ vai olla estämässä vastustajan korotusta siksi ei oteta kantaa
 3. Arvosta keskustaa sotilailla ja ratsuilla
 4. Arvosta pitkiä linjoja daami, torni ja lähetti
 */
-double Asema::evaluoi()
+float Asema::evaluoi()
 {
-	return 0;
-
 	//kertoimet asetettu sen takia että niiden avulla asioiden painoarvoa voidaan säätää helposti yhdestä paikasta
 
 	//1. Nappuloiden arvo
+	float vArvo = 0;
+	float mArvo = 0;
+
+	for(int y = 0; y < 8; y++)
+	{
+		for(int x = 0; x < 8; x++)
+		{
+			if(_lauta[y][x] == NULL)
+				continue;
+
+			if(_lauta[y][x]->getKoodi() == VS)
+				vArvo += 1.0f;
+			else if(_lauta[y][x]->getKoodi() == VT)
+				vArvo += 5.0f;
+			else if(_lauta[y][x]->getKoodi() == VL)
+				vArvo += 3.25f;
+			else if(_lauta[y][x]->getKoodi() == VR)
+				vArvo += 3.0f;
+			else if(_lauta[y][x]->getKoodi() == VD)
+				vArvo += 9;
+
+			else if(_lauta[y][x]->getKoodi() == MS)
+				mArvo += 1.0f;
+			else if(_lauta[y][x]->getKoodi() == MT)
+				mArvo += 5.0f;
+			else if(_lauta[y][x]->getKoodi() == ML)
+				mArvo += 3.25f;
+			else if(_lauta[y][x]->getKoodi() == MR)
+				mArvo += 3.0f;
+			else if(_lauta[y][x]->getKoodi() == MD)
+				mArvo += 9;
+		}
+	}
 
 	//2. Kuningas turvassa
 
 	//3. Arvosta keskustaa
 
 	// 4. Arvosta linjoja
-
+	return vArvo - mArvo;
 }
 
 
@@ -290,8 +303,7 @@ bool Asema::onkoAvausTaiKeskipeli(int vari)
 
 }
 
-
-double Asema::nappuloitaKeskella(int vari)
+float Asema::nappuloitaKeskella(int vari)
 {
 	return 0;
 
@@ -315,7 +327,7 @@ double Asema::nappuloitaKeskella(int vari)
 }
 
 
-double Asema::linjat(int vari)
+float Asema::linjat(int vari)
 {
 	return 0;
 
@@ -348,10 +360,10 @@ double Asema::linjat(int vari)
 //	}
 //	return min;
 //}
+
 MinMaxPaluu Asema::minimax(int syvyys)
 {
 	MinMaxPaluu paluuarvo;
-
 	// Generoidaan aseman lailliset siirrot.
 
 	// Rekursion kantatapaus 1: peli on loppu
@@ -367,15 +379,77 @@ MinMaxPaluu Asema::minimax(int syvyys)
 
 MinMaxPaluu Asema::maxi(int syvyys)
 {
-	MinMaxPaluu paluu;
-	return paluu;
+	MinMaxPaluu max;
+
+	if(syvyys == 0)
+	{
+		max._evaluointiArvo = evaluoi();
+		return max;
+	}
+		
+	std::list<Siirto> siirtoLista;
+	annaLaillisetSiirrot(siirtoLista);
+
+	if(siirtoLista.size() == 0)
+	{
+		max._evaluointiArvo = 1000000.0f;
+		return max;
+	}
+
+	max._evaluointiArvo = -INT_MAX;
+
+	for(Siirto s : siirtoLista)
+	{
+		Asema seuraaja = *this;
+		seuraaja.paivitaAsema(&s);
+		
+		MinMaxPaluu score = seuraaja.mini(syvyys-1);
+		if(score._evaluointiArvo > max._evaluointiArvo)
+		{
+			max = score;
+			max._parasSiirto = s;
+		}
+	}
+
+	return max;
 }
 
 
 MinMaxPaluu Asema::mini(int syvyys)
 {
-	MinMaxPaluu paluu;
-	return paluu;
+	MinMaxPaluu min;
+
+	if(syvyys == 0)
+	{
+		min._evaluointiArvo = -evaluoi();
+		return min;
+	}
+
+	std::list<Siirto> siirtoLista;
+	annaLaillisetSiirrot(siirtoLista);
+
+	if(siirtoLista.size() == 0)
+	{
+		min._evaluointiArvo = 1000000.0f;
+		return min;
+	}
+
+	min._evaluointiArvo = INT_MAX;
+
+	for(Siirto s : siirtoLista)
+	{
+		Asema seuraaja = *this;
+		seuraaja.paivitaAsema(&s);
+
+		MinMaxPaluu score = seuraaja.maxi(syvyys - 1);
+		if(score._evaluointiArvo < min._evaluointiArvo)
+		{
+			min = score;
+			min._parasSiirto = s;
+		}
+	}
+
+	return min;
 }
 
 
@@ -415,24 +489,20 @@ void Asema::annaLinnoitusSiirrot(std::list<Siirto>& lista, int vastustajanVari)
 {
 	if(vastustajanVari == 1)
 	{
-		std::wcout << "valkoinen" << std::endl;
 		if(_onkoValkeaKuningasLiikkunut && (_onkoValkeaDTliikkunut || _onkoValkeaKTliikkunut))
 			return;
 
 		if(_lauta[0][5] == NULL && _lauta[0][6] == NULL && !onkoRuutuUhattu(&Ruutu(5, 0), vastustajanVari ))
 		{
 			lista.push_back(Siirto(true, false));
-			std::wcout << "l" << std::endl;
 		}
 		if(_lauta[0][1] == NULL && _lauta[0][2] == NULL && _lauta[0][3] == NULL && !onkoRuutuUhattu(&Ruutu(3, 0), vastustajanVari))
 		{
 			lista.push_back(Siirto(false, true));
-			std::wcout << "p" << std::endl;
 		}
 	}
 	else if(vastustajanVari == 0)
 	{
-		std::wcout << "musta" << std::endl;
 		if(_onkoMustaKuningasLiikkunut && (_onkoMustaDTliikkunut || _onkoMustaKTliikkunut))
 			return;
 

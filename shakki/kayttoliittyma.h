@@ -13,7 +13,7 @@ public:
 
 	void aseta_asema(Asema* asema) { this->_asema = asema;  }
 	void piirraLauta();
-	Siirto annaVastustajanSiirto(std::list<Siirto>& lista);
+	Siirto annaVastustajanSiirto();
 	int kysyVastustajanVari();
 
 	static Kayttoliittyma* getInstance();

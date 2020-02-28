@@ -86,7 +86,7 @@ bool onkoSyoteVirheellinen(const int arvo, const char* virheIlmoitus)
 	return true;
 }
 
-Siirto Kayttoliittyma::annaVastustajanSiirto(std::list<Siirto>& laillisetSiirrot)
+Siirto Kayttoliittyma::annaVastustajanSiirto()
 {
 	std::string syote;
 	char nappula;
@@ -150,11 +150,6 @@ Siirto Kayttoliittyma::annaVastustajanSiirto(std::list<Siirto>& laillisetSiirrot
 		bool loppuYCheck = onkoSyoteVirheellinen(loppuY, "Loppu koordinaatin numero on virheellinen");
 		if(alkuXCheck || alkuYCheck || loppuXCheck || loppuYCheck)
 			continue;
-
-		std::wcout << "AlkuX" << alkuX << std::endl;
-		std::wcout << "AlkuY" << alkuY << std::endl;
-		std::wcout << "LoppuX" << loppuX << std::endl;
-		std::wcout << "LoppuY" << loppuY << std::endl;
 
 		/* IN PROGRESS */
 

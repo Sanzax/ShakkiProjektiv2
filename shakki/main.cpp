@@ -11,6 +11,7 @@
 
 int main()
 {
+	int maksimiSyvyys = 4;
 	_setmode(_fileno(stdout), _O_U16TEXT);
 	int lopetus = 100;
 	Asema asema;
@@ -20,16 +21,22 @@ int main()
 			  kysyVastustajanVari());
 	std::list<Siirto> lista;
 	system("cls");
-	int koneenVari = peli.getKoneenVari();
+	int koneenVari;
+	while(true)
+	{
+		int vari;
+		std::wcout << "Anna koneen vari: ";
+		std::wcin >> vari;
 
-	//asema.annaLaillisetSiirrot(lista);
+		if(vari != 0 && vari != 1)
+		{
+			std::wcout << "Virheellinen vari!" << std::endl;
+			continue;
+		}
 
-	/*
-	Siirto siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
-	asema.paivitaAsema(&siirto);
-	Kayttoliittyma::getInstance()->piirraLauta();
-	*/
-
+		koneenVari = vari;
+		break;
+	}
 
 	while(lopetus != 0)
 	{
@@ -39,6 +46,7 @@ int main()
 		// Tarkasta onko peli loppu?
 		asema.annaLaillisetSiirrot(lista);
 
+		/*
 		std::wcout << "Lailliset siirrot:" << std::endl;
 		for(Siirto s : lista)
 		{
@@ -49,35 +57,36 @@ int main()
 			else
 				std::wcout << "Siirto: " << s.getAlkuruutu().getSarake() << ", " << s.getAlkuruutu().getRivi() <<
 				" : " << s.getLoppuruutu().getSarake() << ", " << s.getLoppuruutu().getRivi() << std::endl;
-		}
+		}*/
 
-		if(lista.size() == 0)
-		{
-			lopetus = 0;
-			std::wcout << "Peli loppui";
-			continue;
-		}
 		Siirto siirto;
-		siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto(lista);
-		/*
-		if (asema.getSiirtovuoro() == koneenVari) {
-			//MinMaxPaluu paluu;
+		if(asema.getSiirtovuoro() == koneenVari) {
+			MinMaxPaluu paluu;
 			if (koneenVari == 0) {
-				//paluu = asema.maxi(3);
+				paluu = asema.maxi(maksimiSyvyys);
+				if(paluu._evaluointiArvo == 1000000)
+				{
+					std::wcout << "Peli loppui";
+					lopetus = 0;
+					continue;
+				}
 			}
 			else {
-				//paluu = asema.mini(3);
+				paluu = asema.mini(maksimiSyvyys);
+				if(paluu._evaluointiArvo == 1000000)
+				{
+					std::wcout << "Peli loppui";
+					lopetus = 0;
+					continue;
+				}
 			}
-			//siirto = paluu._parasSiirto;
+			siirto = paluu._parasSiirto;
 		}
 		else {
-			/*siirto = Kayttoliittyma::getInstance()->
-				annaVastustajanSiirto();
-		}*/
+			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+		}
 		asema.paivitaAsema(&siirto);
 	}
-
-
 	return 0;
 }
 

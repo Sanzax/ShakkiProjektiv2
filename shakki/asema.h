@@ -33,7 +33,7 @@ public:
 
 	Asema();												// Asettaa alkuaseman.
 	void paivitaAsema(Siirto*);								// P‰ivitt‰‰ aseman annetulla siirrolla.
-	double evaluoi();										// Aseman numeerinen arviointi.
+	float evaluoi();										// Aseman numeerinen arviointi.
 	MinMaxPaluu maxi(int syvyys);							// Minimax (max:n siirtovuoro).
 	MinMaxPaluu mini(int syvyys);							// Minimax (min:n siirtovuoro).
 	MinMaxPaluu minimax(int syvyys);						// Minimax-algoritmi.
@@ -60,8 +60,8 @@ private:
 
 	double laskeNappuloidenArvo(int);
 	bool onkoAvausTaiKeskipeli(int);
-	double nappuloitaKeskella(int);
-	double linjat(int);
+	float nappuloitaKeskella(int);
+	float linjat(int);
 	bool onkoRuutuUhattu(Ruutu*, int);
 	void annaLinnoitusSiirrot(std::list<Siirto>& lista, int vari);
 	void annaRaakaSiirrot(std::list<Siirto>& lista);
