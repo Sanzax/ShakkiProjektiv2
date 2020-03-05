@@ -94,6 +94,7 @@
     <ClInclude Include="peli.h" />
     <ClInclude Include="ruutu.h" />
     <ClInclude Include="siirto.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="vastustaja.h" />
   </ItemGroup>
   <ItemGroup>

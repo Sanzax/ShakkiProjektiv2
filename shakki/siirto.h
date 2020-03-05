@@ -1,6 +1,6 @@
 #pragma once
 #include "ruutu.h"
-
+#include <iostream>
 // Ns. "forward declaration". Nyt Asema-luokassa voidaa esitellä Nappula-osoittimia ilman,
 // että nappula.h -tiedostoa täytyy includoida.
 class Nappula; 
@@ -26,6 +26,9 @@ public:
 			return true;
 		return false;
 	}
+
+	void tulosta();
+
 
 private:
 	Ruutu _alkuRuutu;

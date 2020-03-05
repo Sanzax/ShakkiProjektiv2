@@ -198,10 +198,10 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
 			std::wstring vastaus;
 			std::wcin >> vastaus;
-			if(vastaus == L"D") _asema->_lauta[alkuY][alkuX] = Asema::vd;
-			else if(vastaus == L"T") _asema->_lauta[alkuY][alkuX] = Asema::vt;
-			else if(vastaus == L"L") _asema->_lauta[alkuY][alkuX] = Asema::vl;
-			else if(vastaus == L"R") _asema->_lauta[alkuY][alkuX] = Asema::vr;
+			if(vastaus == L"D") siirto._miksikorotetaan = Asema::vd;
+			else if(vastaus == L"T") siirto._miksikorotetaan = Asema::vt;
+			else if(vastaus == L"L") siirto._miksikorotetaan = Asema::vl;
+			else if(vastaus == L"R") siirto._miksikorotetaan = Asema::vr;
 			else continue;
 
 			break;
@@ -214,10 +214,10 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 			std::wcout << "Miksi nappulaksi haluat korottaa?: ";
 			std::wstring vastaus;
 			std::wcin >> vastaus;
-			if(vastaus == L"D") _asema->_lauta[alkuY][alkuX] = Asema::md;
-			else if(vastaus == L"T") _asema->_lauta[alkuY][alkuX] = Asema::mt;
-			else if(vastaus == L"L") _asema->_lauta[alkuY][alkuX] = Asema::ml;
-			else if(vastaus == L"R") _asema->_lauta[alkuY][alkuX] = Asema::mr;
+			if(vastaus == L"D") siirto._miksikorotetaan = Asema::md;
+			else if(vastaus == L"T") siirto._miksikorotetaan = Asema::mt;
+			else if(vastaus == L"L") siirto._miksikorotetaan = Asema::ml;
+			else if(vastaus == L"R") siirto._miksikorotetaan = Asema::mr;
 			else continue;
 
 			break;

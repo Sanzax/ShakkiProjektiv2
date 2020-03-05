@@ -7,11 +7,27 @@
 #include "kayttoliittyma.h"
 #include "Siirto.h"
 #include "asema.h"
+#include "Timer.h"
+#include <vector>
 
+void tulostaLaillisetSiirrot(Asema& asema)
+{
+	std::vector<Siirto> siirrot;
+	siirrot.reserve(50);
+	asema.annaLaillisetSiirrot(siirrot);
+	std::wcout << "Lailliset siirrot: \n";
+	std::wcout << "{";
+	for(Siirto s : siirrot)
+		s.tulosta();
+	std::wcout << "}\n";
+}
 
 int main()
 {
-	int maksimiSyvyys = 4;
+	int maksimiSyvyys;
+	std::wcout << "Anna syvyys: ";
+	std::wcin >> maksimiSyvyys;
+
 	_setmode(_fileno(stdout), _O_U16TEXT);
 	int lopetus = 100;
 	Asema asema;
@@ -19,7 +35,7 @@ int main()
 
 	Peli peli(Kayttoliittyma::getInstance()->
 			  kysyVastustajanVari());
-	std::list<Siirto> lista;
+	std::vector<Siirto> lista;
 	system("cls");
 	int koneenVari;
 	while(true)
@@ -37,6 +53,49 @@ int main()
 		koneenVari = vari;
 		break;
 	}
+	/*
+	while(lopetus != 0)
+	{
+		lista.clear();
+		std::wcout << "\n";
+		// Tarkasta onko peli loppu?
+		//asema.annaLaillisetSiirrot(lista);
+
+		Siirto siirto;
+		Timer ajastin;
+		MinMaxPaluu paluu;
+		if(asema.getSiirtovuoro() == 0)
+		{
+			paluu = asema.maxi(maksimiSyvyys);
+			if(paluu._evaluointiArvo == 1000000)
+			{
+				std::wcout << "Peli loppui";
+				lopetus = 0;
+				continue;
+			}
+		}
+		else
+		{
+			paluu = asema.mini(maksimiSyvyys);
+			if(paluu._evaluointiArvo == 1000000)
+			{
+				std::wcout << "Peli loppui";
+				lopetus = 0;
+				continue;
+			}
+		}
+
+		siirto = paluu._parasSiirto;
+		
+		system("cls");
+		ajastin.stop("Siirron miettimiseen meni");
+		std::wcout << "Tehty siirto: "; siirto.tulosta(); std::wcout << std::endl;
+
+		asema.paivitaAsema(&siirto);
+		Kayttoliittyma::getInstance()->piirraLauta();
+
+		std::cin.get();
+	}*/
 
 	while(lopetus != 0)
 	{
@@ -45,6 +104,11 @@ int main()
 		std::wcout << "\n";
 		// Tarkasta onko peli loppu?
 		asema.annaLaillisetSiirrot(lista);
+		if(lista.size() == 0)
+		{
+			std::wcout << "Peli päättyi\n";
+			break;
+		}
 
 		/*
 		std::wcout << "Lailliset siirrot:" << std::endl;
@@ -61,30 +125,26 @@ int main()
 
 		Siirto siirto;
 		if(asema.getSiirtovuoro() == koneenVari) {
+			Timer ajastin;
 			MinMaxPaluu paluu;
-			if (koneenVari == 0) {
-				paluu = asema.maxi(maksimiSyvyys);
-				if(paluu._evaluointiArvo == 1000000)
-				{
-					std::wcout << "Peli loppui";
-					lopetus = 0;
-					continue;
-				}
-			}
-			else {
-				paluu = asema.mini(maksimiSyvyys);
-				if(paluu._evaluointiArvo == 1000000)
-				{
-					std::wcout << "Peli loppui";
-					lopetus = 0;
-					continue;
-				}
-			}
+			paluu = asema.minimax(maksimiSyvyys);
+			ajastin.stop("Siirron miettimiseen meni");
+			tulostaLaillisetSiirrot(asema);
 			siirto = paluu._parasSiirto;
 		}
 		else {
-			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+			//tulostaLaillisetSiirrot(asema);
+			//siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+			Timer ajastin;
+			MinMaxPaluu paluu;
+			paluu = asema.minimax(maksimiSyvyys);
+			ajastin.stop("Siirron miettimiseen meni");
+			tulostaLaillisetSiirrot(asema);
+			siirto = paluu._parasSiirto;
 		}
+
+		std::wcout << "Tehty siirto: "; siirto.tulosta(); std::wcout << std::endl;
+
 		asema.paivitaAsema(&siirto);
 	}
 	return 0;
