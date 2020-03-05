@@ -36,7 +36,7 @@ public:
 	float evaluoi();										// Aseman numeerinen arviointi.
 	MinMaxPaluu maxi(int syvyys);							// Minimax (max:n siirtovuoro).
 	MinMaxPaluu mini(int syvyys);							// Minimax (min:n siirtovuoro).
-	MinMaxPaluu minimax(int syvyys);						// Minimax-algoritmi.
+	MinMaxPaluu minimax(int syvyys, float, float);						// Minimax-algoritmi.
 	void annaLaillisetSiirrot(std::vector<Siirto>& lista);	// Siirtogeneraattori.
 	int getSiirtovuoro();									// Palauttaa siirtovuoron.
 	void setSiirtovuoro(int);								// Asettaa siirtovuoron.
@@ -58,7 +58,7 @@ private:
 	bool _onkoMustaDTliikkunut;			// Linnoitus ei ole sallittu, jos daamisuvustan torni on liikkunut.	
 	bool _onkoMustaKTliikkunut;			// Linnoitus ei ole sallittu, jos kuningassivustan torni on liikkunut.
 
-	double laskeNappuloidenArvo(int);
+	float laskeNappuloidenArvo(int);
 	bool onkoAvausTaiKeskipeli(int);
 	float nappuloitaKeskella(int);
 	float linjat(int);

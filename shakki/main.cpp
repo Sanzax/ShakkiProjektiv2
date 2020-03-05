@@ -127,20 +127,23 @@ int main()
 		if(asema.getSiirtovuoro() == koneenVari) {
 			Timer ajastin;
 			MinMaxPaluu paluu;
-			paluu = asema.minimax(maksimiSyvyys);
+			paluu = asema.minimax(maksimiSyvyys, -INT_MAX, INT_MAX);
 			ajastin.stop("Siirron miettimiseen meni");
 			tulostaLaillisetSiirrot(asema);
 			siirto = paluu._parasSiirto;
 		}
 		else {
-			//tulostaLaillisetSiirrot(asema);
-			//siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+#if 1
+			tulostaLaillisetSiirrot(asema);
+			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+#else
 			Timer ajastin;
 			MinMaxPaluu paluu;
-			paluu = asema.minimax(maksimiSyvyys);
+			paluu = asema.minimax(maksimiSyvyys, -INT_MAX, -INT_MIN);
 			ajastin.stop("Siirron miettimiseen meni");
 			tulostaLaillisetSiirrot(asema);
 			siirto = paluu._parasSiirto;
+#endif
 		}
 
 		std::wcout << "Tehty siirto: "; siirto.tulosta(); std::wcout << std::endl;
