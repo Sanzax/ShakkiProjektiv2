@@ -135,7 +135,7 @@ int main()
 		else {
 #if 1
 			tulostaLaillisetSiirrot(asema);
-			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
+			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto(lista);
 #else
 			Timer ajastin;
 			MinMaxPaluu paluu;

@@ -86,34 +86,39 @@ bool onkoSyoteVirheellinen(const int arvo, const char* virheIlmoitus)
 	return true;
 }
 
-Siirto Kayttoliittyma::annaVastustajanSiirto()
+Siirto Kayttoliittyma::annaVastustajanSiirto(std::vector<Siirto>& laillisetSiirrot)
 {
 	std::string syote;
 	char nappula;
 	int alkuX, alkuY, loppuX, loppuY;
 	char viiva;
 	bool lyhytLinna = false, pitkaLinna = false;
+	bool lyhytLinnaSyote, pitkaLinnaSyote;
 
 	while (true)
 	{
-		std::wcout << "Anna siirto" << std::endl; //Kysytääm käyttäjältä siirtoa
+		std::wcout << "Anna siirto" << std::endl; //Kysytään käyttäjältä siirtoa
 		std::cin >> syote;
 
+		lyhytLinnaSyote = false, pitkaLinnaSyote = false;
+
+#if 1
 		if (syote == "O-O") // Jos syöte on lyhyt tai...
 		{
-			lyhytLinna = true;
-			break;
+			std::wcout << "oo" << std::endl;
+			lyhytLinnaSyote = true;
 		}
 		else if (syote == "O-O-O")  // ...pitkä linna, asetetaan sopivat flagit
 		{							// ja hypätään suoraan siirron luontiin
-			pitkaLinna = true;
-			break;
+			pitkaLinnaSyote = true;
 		}
+#endif
 
+		std::wcout << "test" << std::endl;
 		// Alustetaan koordinaatit syötteen mukaan
 		nappula = syote[0];
 
-		if(nappula != 'K' && nappula != 'D' && nappula != 'L' && nappula != 'T' && nappula != 'R')
+		if(nappula != 'K' && nappula != 'D' && nappula != 'L' && nappula != 'T' && nappula != 'R' && (!lyhytLinnaSyote && !pitkaLinnaSyote))
 		{
 			alkuX = syote[0] - 'a';	 //alkuX = syote[0] - 'a';
 			alkuY = syote[1] - '1';	 //alkuY = syote[1] - '1';
@@ -130,7 +135,7 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 			loppuY = syote[5] - '1'; //loppuY = syote[4] - '1';
 
 			// Jos Nappula ei ole kelvollinen, kysytään siirtoa uudelleen
-			if(!(nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T'))
+			if(!(nappula == 'K' || nappula == 'D' || nappula == 'L' || nappula == 'R' || nappula == 'T') && (!lyhytLinnaSyote && !pitkaLinnaSyote))
 			{
 				std::wcout << "Nappulatyypin syöte ei ollut kelvollinen" << std::endl;
 				continue;
@@ -138,42 +143,70 @@ Siirto Kayttoliittyma::annaVastustajanSiirto()
 		}
 
 		// Jos viiva ei ole kelvollinen, kysytään siirtoa uudelleen
-		if(viiva != '-')
+		if(viiva != '-' && (!lyhytLinnaSyote && !pitkaLinnaSyote))
 		{
 			std::wcout << "Viivasyöte ei ollut kelvollinen" << std::endl;
 			continue;
 		}
-		// Jos koordinaatit ei ole kelvollisia, kysytään siirota uudelleen
-		bool alkuXCheck = onkoSyoteVirheellinen(alkuX, "Alku koordinaatin kirjain on virheellinen");
-		bool alkuYCheck = onkoSyoteVirheellinen(alkuY, "Alku koordinaatin numero on virheellinen");
-		bool loppuXCheck = onkoSyoteVirheellinen(loppuX, "Loppu koordinaatin kirjain on virheellinen");
-		bool loppuYCheck = onkoSyoteVirheellinen(loppuY, "Loppu koordinaatin numero on virheellinen");
-		if(alkuXCheck || alkuYCheck || loppuXCheck || loppuYCheck)
-			continue;
 
-		/* IN PROGRESS */
+		if (!lyhytLinnaSyote && !pitkaLinnaSyote) {
+			// Jos koordinaatit ei ole kelvollisia, kysytään siirtoa uudelleen
+			bool alkuXCheck = onkoSyoteVirheellinen(alkuX, "Alku koordinaatin kirjain on virheellinen");
+			bool alkuYCheck = onkoSyoteVirheellinen(alkuY, "Alku koordinaatin numero on virheellinen");
+			bool loppuXCheck = onkoSyoteVirheellinen(loppuX, "Loppu koordinaatin kirjain on virheellinen");
+			bool loppuYCheck = onkoSyoteVirheellinen(loppuY, "Loppu koordinaatin numero on virheellinen");
+			if ((alkuXCheck || alkuYCheck || loppuXCheck || loppuYCheck))
+				continue;
+		}
 
-		/*
-		bool laitonSiirto = false;
+		/* Laittomien siirtojen tarkistus */
+#if 1
+		bool laillinenSiirtoLoytyi = false;
+		bool laitonLinna = false;
+		auto iter = laillisetSiirrot.begin();
 
 		for (Siirto s : laillisetSiirrot)
 		{
-			std::wcout << s.getAlkuruutu().getSarake() << " ::: " << alkuX << std::endl;
-			std::wcout << s.getAlkuruutu().getRivi() << " ::: " << alkuY << std::endl;
-			std::wcout << s.getLoppuruutu().getSarake() << " ::: " << loppuX << std::endl;
-			std::wcout << s.getLoppuruutu().getRivi() << " ::: " << loppuY << std::endl;
-
-			if (s.getAlkuruutu().getSarake() != alkuX || s.getAlkuruutu().getRivi() != alkuY || s.getLoppuruutu().getSarake() != loppuX || s.getLoppuruutu().getRivi() || loppuY) {
-
-				std::wcout << "Syöte on laiton" << std::endl;
-				laitonSiirto == true;
+			if (s.onkoLyhytLinna() && lyhytLinnaSyote) {
+				std::wcout << "Syöte on laillinen/Lyhyt linna" << std::endl;
+				lyhytLinna = true;
+			}
+			else if (s.onkoPitkaLinna() && pitkaLinnaSyote) {
+				std::wcout << "Syöte on laillinen/Pitkä linna" << std::endl;
+				pitkaLinna = true;
+			}
+			else if (pitkaLinnaSyote && !s.onkoPitkaLinna()) {
+				std::wcout << "incorrect pitkalinna" << std::endl;
+				laitonLinna = true;
+				break;
+			}
+			else if (lyhytLinnaSyote && !s.onkoLyhytLinna()) {
+				std::wcout << "incorrect lyhyt linna" << std::endl;
+				laitonLinna = true;
+				break;
 			}
 
-			if (laitonSiirto) {
-				continue;
+
+			//jos lailliset siirrot listalta löytyy syöte joka vastaa pelaajan syötettä, niin lopetetaan tarkastelu ja hyväksytään siirto
+			if (s.getAlkuruutu().getSarake() == alkuX && s.getAlkuruutu().getRivi() == alkuY && s.getLoppuruutu().getSarake() == loppuX && s.getLoppuruutu().getRivi() == loppuY) {
+				std::wcout << "Syöte on laillinen" << std::endl;
+				laillinenSiirtoLoytyi = true;
+				break;
 			}
+			iter++;
 		}
-		*/
+
+		//jos annettua syötettä ei löydy lailliset siirrot listalta, niin kysytään siirtoa uudelleen
+		if (iter == laillisetSiirrot.end() && !laillinenSiirtoLoytyi) {
+			std::wcout << "Laiton siirto" << std::endl;
+			continue;
+		}
+		else if(laitonLinna){
+			std::wcout << "Laiton linnoitussiirto" << std::endl;
+			continue;
+		}
+		
+#endif
 
 		break; // Jos syöte oli kelvollinen lähdetään silmukasta
 	}
@@ -231,3 +264,4 @@ int Kayttoliittyma::kysyVastustajanVari()
 {
 	return 0;
 }
+
