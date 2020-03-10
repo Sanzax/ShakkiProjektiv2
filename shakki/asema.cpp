@@ -38,7 +38,7 @@ Asema::Asema()
 	
 	
 	// Asetetaan alkuaseman mukaisesti nappulat ruuduille
-	/*
+#if 1	
 	_lauta[0][0] = Asema::vt;
 	_lauta[0][1] = Asema::vr;
 	_lauta[0][2] = Asema::vl;
@@ -60,10 +60,33 @@ Asema::Asema()
 	_lauta[7][7] = Asema::mt;
 	for (int i = 0; i < 8; i++)
 		_lauta[6][i] = Asema::ms;
-		*/
+#endif
 
-	_lauta[0][0] = Asema::vk;
-	_lauta[6][6] = Asema::mk;
+#if 0 //valkoinen
+	_lauta[0][4] = Asema::vk;
+	_lauta[1][5] = Asema::vs;
+	_lauta[1][6] = Asema::vs;
+	_lauta[1][7] = Asema::vs;
+
+
+	_lauta[2][6] = Asema::md;
+
+	_lauta[7][4] = Asema::mk;
+#endif
+
+#if 0
+	_lauta[7][4] = Asema::mk;
+	_lauta[6][5] = Asema::ms;
+	_lauta[6][6] = Asema::ms;
+	_lauta[6][7] = Asema::ms;
+
+
+	_lauta[5][6] = Asema::vd;
+
+	_lauta[0][4] = Asema::vk;
+	_lauta[0][3] = Asema::mt;
+#endif
+
 
 	/*
 	_lauta[0][0] = Asema::vk;

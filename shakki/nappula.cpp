@@ -296,28 +296,29 @@ void Sotilas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* a
 				else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x, y + 1)), lista, asema);
 			}
 
-			if(x + 1 < 8) // viistoon oikealle
+			
+		}
+		if (x + 1 < 8) // viistoon oikealle
+		{
+			if (asema->_lauta[y + 1][x + 1] != NULL)
 			{
-				if(asema->_lauta[y + 1][x + 1] != NULL)
+				tuloruudunNappulanVari = asema->_lauta[y + 1][x + 1]->getVari();
+				if (lahtoruudunNappulanVari != tuloruudunNappulanVari)
 				{
-					tuloruudunNappulanVari = asema->_lauta[y + 1][x + 1]->getVari();
-					if(lahtoruudunNappulanVari != tuloruudunNappulanVari)
-					{
-						if(y < 6) lista.emplace_back(*alkuRuutu, Ruutu(x + 1, y + 1));
-						else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x + 1, y + 1)), lista, asema);
-					}
+					if (y < 6) lista.emplace_back(*alkuRuutu, Ruutu(x + 1, y + 1));
+					else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x + 1, y + 1)), lista, asema);
 				}
 			}
-			if(x - 1 > -1) // Viistoon vasemmalle
+		}
+		if (x - 1 > -1) // Viistoon vasemmalle
+		{
+			if (asema->_lauta[y + 1][x - 1] != NULL)
 			{
-				if(asema->_lauta[y + 1][x - 1] != NULL)
+				tuloruudunNappulanVari = asema->_lauta[y + 1][x - 1]->getVari();
+				if (lahtoruudunNappulanVari != tuloruudunNappulanVari)
 				{
-					tuloruudunNappulanVari = asema->_lauta[y + 1][x - 1]->getVari();
-					if(lahtoruudunNappulanVari != tuloruudunNappulanVari)
-					{
-						if(y < 6) lista.emplace_back(*alkuRuutu, Ruutu(x - 1, y + 1));
-						else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x - 1, y + 1)), lista, asema);
-					}
+					if (y < 6) lista.emplace_back(*alkuRuutu, Ruutu(x - 1, y + 1));
+					else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x - 1, y + 1)), lista, asema);
 				}
 			}
 		}
@@ -342,28 +343,29 @@ void Sotilas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* a
 				else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x, y - 1)), lista, asema);
 			}
 
-			if(x + 1 < 8) // viistoon oikealle
+			
+		}
+		if (x + 1 < 8) // viistoon oikealle
+		{
+			if (asema->_lauta[y - 1][x + 1] != NULL)
 			{
-				if(asema->_lauta[y - 1][x + 1] != NULL)
+				tuloruudunNappulanVari = asema->_lauta[y - 1][x + 1]->getVari();
+				if (lahtoruudunNappulanVari != tuloruudunNappulanVari)
 				{
-					tuloruudunNappulanVari = asema->_lauta[y - 1][x + 1]->getVari();
-					if(lahtoruudunNappulanVari != tuloruudunNappulanVari)
-					{
-						if(y > 1) lista.emplace_back(*alkuRuutu, Ruutu(x + 1, y - 1));
-						else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x + 1, y - 1)), lista, asema);
-					}
+					if (y > 1) lista.emplace_back(*alkuRuutu, Ruutu(x + 1, y - 1));
+					else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x + 1, y - 1)), lista, asema);
 				}
 			}
-			if(x - 1 > -1) // Viistoon vasemmalle
+		}
+		if (x - 1 > -1) // Viistoon vasemmalle
+		{
+			if (asema->_lauta[y - 1][x - 1] != NULL)
 			{
-				if(asema->_lauta[y - 1][x - 1] != NULL)
+				tuloruudunNappulanVari = asema->_lauta[y - 1][x - 1]->getVari();
+				if (lahtoruudunNappulanVari != tuloruudunNappulanVari)
 				{
-					tuloruudunNappulanVari = asema->_lauta[y - 1][x - 1]->getVari();
-					if(lahtoruudunNappulanVari != tuloruudunNappulanVari)
-					{
-						if(y > 1) lista.emplace_back(*alkuRuutu, Ruutu(x - 1, y - 1));
-						else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x - 1, y - 1)), lista, asema);
-					}
+					if (y > 1) lista.emplace_back(*alkuRuutu, Ruutu(x - 1, y - 1));
+					else lisaaSotilaanKorotukset(&Siirto(*alkuRuutu, Ruutu(x - 1, y - 1)), lista, asema);
 				}
 			}
 		}
