@@ -48,7 +48,7 @@ public:
 	bool getOnkoMustaKTliikkunut();							// Linnoittuminen mahdollista?
 	
 private:
-
+	float kuningasTurvassa(int);
 	// Lisäinformaatio pelitilanteesta.
 	int _siirtovuoro;					// 0 = valkea, 1 = musta.
 	bool _onkoValkeaKuningasLiikkunut;	// Linnoitus ei ole sallittu, jos kuningas on liikkunut.

@@ -282,25 +282,34 @@ vai olla est‰m‰ss‰ vastustajan korotusta siksi ei oteta kantaa
 3. Arvosta keskustaa sotilailla ja ratsuilla
 4. Arvosta pitki‰ linjoja daami, torni ja l‰hetti
 */
+
+const float materiaaliKerroin = 1;
+const float kuningasKerroin = 1;
+const float linjaKerroin = 0.05f;
+const float keskustaKerroin = 1;
 float Asema::evaluoi()
 {
 	//kertoimet asetettu sen takia ett‰ niiden avulla asioiden painoarvoa voidaan s‰‰t‰‰ helposti yhdest‰ paikasta
 
 	//1. Nappuloiden arvo
-	float vMateriaali = laskeNappuloidenArvo(0);
-	float mMateriaali = laskeNappuloidenArvo(1);
+	float vMateriaali = laskeNappuloidenArvo(0) * materiaaliKerroin;
+	float mMateriaali = laskeNappuloidenArvo(1) * materiaaliKerroin;
 
 	//2. Kuningas turvassa
+	float vKuningasArvo = kuningasTurvassa(0) * kuningasKerroin;
+	float mKuningasArvo = kuningasTurvassa(1) * kuningasKerroin;
 
 	//3. Arvosta keskustaa
-	float vKeskusta = nappuloitaKeskella(0);
-	float mKeskusta = nappuloitaKeskella(1);
+	float vKeskusta = nappuloitaKeskella(0) * keskustaKerroin;
+	float mKeskusta = nappuloitaKeskella(1) * keskustaKerroin;
 
 
 	// 4. Arvosta linjoja
+	float vLinjat = linjat(0) * linjaKerroin;
+	float mLinjat = linjat(1) * linjaKerroin;
 
-	float vArvo = vMateriaali + vKeskusta;
-	float mArvo = mMateriaali + mKeskusta;
+	float vArvo = vMateriaali + vKeskusta + vLinjat + vKuningasArvo;
+	float mArvo = mMateriaali + mKeskusta + mLinjat + mKuningasArvo;
 
 	return vArvo - mArvo;
 }
@@ -336,141 +345,240 @@ float Asema::laskeNappuloidenArvo(int vari)
 	return arvo;
 }
 
-
-bool Asema::onkoAvausTaiKeskipeli(int vari)
+float Asema::kuningasTurvassa(int vari)
 {
-	bool onkoDaami = false;
-	int upseerit = 0;
-	for(int y = 0; y < 8; y++)
+	float valkeaArvo = 0;
+	float  mustaArvo = 0;
+	if(onkoAvausTaiKeskipeli( 0))
 	{
-		for(int x = 0; x < 8; x++)
+		// Jos lyhell‰ puolella saa lis‰arvoa 2 edellytt‰‰ ett‰ f ja g sotilas  paikallaan 
+		if(_lauta[0][6] != NULL && _lauta[1][5] != NULL && _lauta[1][6] != NULL)
 		{
-			if(_lauta[y][x] == NULL) continue;
-			if(_lauta[y][x]->getKoodi() == MT || _lauta[y][x]->getKoodi() == VT || _lauta[y][x]->getKoodi() == ML || _lauta[y][x]->getKoodi() == VL ||
-			   _lauta[y][x]->getKoodi() == MR || _lauta[y][x]->getKoodi() == VR)
-				upseerit++;
-
-			if(_lauta[y][x]->getKoodi() == MD || _lauta[y][x]->getKoodi() == VD) 
-				onkoDaami = true;
+			if(_lauta[0][6]->getKoodi() == VK && (_lauta[1][5]->getKoodi() == VS && (_lauta[1][6]->getKoodi() == VS)))
+				valkeaArvo += 2;
+		}
+		// Jos pitk‰ll‰ puolella saa lis‰arvooa 1 edelytt‰‰ ett‰  c ja b sotilas paikallaan
+		if(_lauta[0][1] != NULL && _lauta[0][2] != NULL && _lauta[1][1] != NULL && _lauta[2][1] != NULL)
+		{
+			if(_lauta[0][1]->getKoodi() == VK || _lauta[0][2]->getKoodi() == VK && (_lauta[1][1]->getKoodi() == VS && (_lauta[1][2]->getKoodi() == VS)))
+				valkeaArvo += 1;
+		}
+	}
+	if(onkoAvausTaiKeskipeli(1))
+	{
+		// Jos lyhell‰ puolella saa lis‰arvoa 2 edellytt‰‰ ett‰ f ja g sotilas  paikallaan 
+		if(_lauta[7][6] != NULL && _lauta[6][5] != NULL && _lauta[6][6] != NULL)
+		{
+			if(_lauta[7][6]->getKoodi() == MK && (_lauta[6][5]->getKoodi() == MS && (_lauta[6][6]->getKoodi() == MS)))
+				mustaArvo += 2;
+		}
+		// Jos pitk‰ll‰ puolella saa lis‰arvooa 1 edelytt‰‰ ett‰  c ja b sotilas paikallaan
+		if(_lauta[7][1] != NULL && _lauta[7][2] != NULL && _lauta[7][1] != NULL && _lauta[7][1] != NULL)
+		{
+			if(_lauta[7][1]->getKoodi() == MK || _lauta[7][2]->getKoodi() == MK && (_lauta[7][1]->getKoodi() == MS && (_lauta[7][2]->getKoodi() == MS)))
+				mustaArvo += 1;
 		}
 	}
 
-	if(upseerit <= 3 && !onkoDaami)
-		return false;
+	if(vari == 0)
+		return valkeaArvo;
+	else
+		return mustaArvo;
+}
 
-	return true;
-	// Jos upseereita 3 tai v‰hemm‰n on loppupeli
-	// mutta jos daami laudalla on loppueli vasta kun kuin vain daami j‰ljell‰
 
+bool Asema::onkoAvausTaiKeskipeli(int vari)
+{
+	int valkeaUpseeriLkm = 0;
+	int mustaUpseeriLkm = 0;
+	bool valkeaDaami = false;
+	bool mustaDaami = false;
+	for(int x = 0; x < 8; x++)
+	{
+		for(int y = 0; y < 8; y++)
+		{
+			if(_lauta[x][y] == NULL) continue;
+			int nappulanNimi = _lauta[x][y]->getKoodi();
+			//Valkoiset
+			if(nappulanNimi == VD)
+			{
+				valkeaUpseeriLkm += 1;
+				valkeaDaami = true;
+			}
+			if(nappulanNimi == VT || nappulanNimi == VL || nappulanNimi == VR)
+				mustaUpseeriLkm += 1;
+
+			//Mustat
+			if(nappulanNimi == MD)
+			{
+				mustaUpseeriLkm += 1;
+				mustaDaami = true;
+			}
+			if(nappulanNimi == MT || nappulanNimi == ML || nappulanNimi == MR)
+				mustaUpseeriLkm += 1;
+		}
+	}
 	//Jos vari on 0 eli valkoiset
 	//niin on keskipeli jos mustalla upseereita yli 2 tai jos daami+1
+	if(vari == 0)
+	{
+		if(mustaUpseeriLkm > 2 || (mustaDaami == true && mustaUpseeriLkm > 1))
+			return true;
+		else
+			return false;
+	}
+	else
+	{
+		if(valkeaUpseeriLkm > 2 || (valkeaDaami == true && valkeaUpseeriLkm > 1))
+			return true;
+		else
+			return false;
+	}
+
 }
 
 float Asema::nappuloitaKeskella(int vari)
 {
-	float arvo = 0;
-
-	if(vari == 0)
-	{
-		if(_lauta[3][2] != NULL && _lauta[3][2]->getKoodi() == VS)
-			arvo += .11f;
-		if(_lauta[4][2] != NULL && _lauta[4][2]->getKoodi() == VS)
-			arvo += .11f;
-		if(_lauta[3][5] != NULL && _lauta[3][5]->getKoodi() == VS)
-			arvo += .11f;
-		if(_lauta[4][5] != NULL && _lauta[4][5]->getKoodi() == VS)
-			arvo += .11f;
-		if(_lauta[3][2] != NULL && _lauta[3][2]->getKoodi() == VR)
-			arvo += .11f;
-		if(_lauta[4][2] != NULL && _lauta[4][2]->getKoodi() == VR)
-			arvo += .11f;
-		if(_lauta[3][5] != NULL && _lauta[3][5]->getKoodi() == VR)
-			arvo += .11f;
-		if(_lauta[4][5] != NULL && _lauta[4][5]->getKoodi() == VR)
-			arvo += .11f;
-
-		if(_lauta[3][3] != NULL && _lauta[3][3]->getKoodi() == VS)
-			arvo += .25f;
-		if(_lauta[4][3] != NULL && _lauta[4][3]->getKoodi() == VS)
-		   arvo += .25f;
-		if(_lauta[3][4] != NULL && _lauta[3][4]->getKoodi() == VS)
-			arvo += .25f;
-		if(_lauta[4][4] != NULL && _lauta[4][4]->getKoodi() == VS)
-			arvo += .25f;
-		if(_lauta[3][3] != NULL && _lauta[3][3]->getKoodi() == VR)
-			arvo += .25f;
-		if(_lauta[4][3] != NULL && _lauta[4][3]->getKoodi() == VR)
-			arvo += .25f;
-		if(_lauta[3][4] != NULL && _lauta[3][4]->getKoodi() == VR)
-			arvo += .25f;
-		if(_lauta[4][4] != NULL && _lauta[4][4]->getKoodi() == VR)
-			arvo += .25f;
-	}
-	else if(vari == 1)
-	{
-		if(_lauta[3][2] != NULL && _lauta[3][2]->getKoodi() == MS)
-			arvo += .11f;
-		if(_lauta[4][2] != NULL && _lauta[4][2]->getKoodi() == MS)
-			arvo += .11f;
-		if(_lauta[3][5] != NULL && _lauta[3][5]->getKoodi() == MS)
-			arvo += .11f;
-		if(_lauta[4][5] != NULL && _lauta[4][5]->getKoodi() == MS)
-			arvo += .11f;
-		if(_lauta[3][2] != NULL && _lauta[3][2]->getKoodi() == MR)
-			arvo += .11f;
-		if(_lauta[4][2] != NULL && _lauta[4][2]->getKoodi() == MR)
-			arvo += .11f;
-		if(_lauta[3][5] != NULL && _lauta[3][5]->getKoodi() == MR)
-			arvo += .11f;
-		if(_lauta[4][5] != NULL && _lauta[4][5]->getKoodi() == MR)
-			arvo += .11f;
-
-		if(_lauta[3][3] != NULL && _lauta[3][3]->getKoodi() == MS)
-			arvo += .25f;
-		if(_lauta[4][3] != NULL && _lauta[4][3]->getKoodi() == MS)
-			arvo += .25f;
-		if(_lauta[3][4] != NULL && _lauta[3][4]->getKoodi() == MS)
-			arvo += .25f;
-		if(_lauta[4][4] != NULL && _lauta[4][4]->getKoodi() == MS)
-			arvo += .25f;
-		if(_lauta[3][3] != NULL && _lauta[3][3]->getKoodi() == MR)
-			arvo += .25f;
-		if(_lauta[4][3] != NULL && _lauta[4][3]->getKoodi() == MR)
-			arvo += .25f;
-		if(_lauta[3][4] != NULL && _lauta[3][4]->getKoodi() == MR)
-			arvo += .25f;
-		if(_lauta[4][4] != NULL && _lauta[4][4]->getKoodi() == MR)
-			arvo += .25f;
-	}
-	return arvo;
-
-	//sotilaat ydinkeskustassa + 0.25/napa
-	//ratsut ydinkeskustassa + 0.25/napa
-	//sotilaat laitakeskustassa + 0.11/napa
-	//ratsut laitakeskustassa + 0.11/napa
-
+	float valkeaKeskella = 0;
+	float mustaKeskella = 0;
 	//valkeille ydinkeskusta
 
-
-
+	if(_lauta[3][3] != NULL && (_lauta[3][3]->getKoodi() == VS || _lauta[3][3]->getKoodi() == VR))
+	{
+		valkeaKeskella += 0.25;
+	}
+	if(_lauta[3][4] && (_lauta[3][4]->getKoodi() == VS || _lauta[3][4]->getKoodi() == VR))
+	{
+		valkeaKeskella += 0.25;
+	}
+	if(_lauta[4][3] != NULL && (_lauta[4][3]->getKoodi() == VS || _lauta[4][3]->getKoodi() == VR))
+	{
+		valkeaKeskella += 0.25;
+	}
+	if(_lauta[4][4] != NULL && (_lauta[4][4]->getKoodi() == VS || _lauta[4][4]->getKoodi() == VR))
+	{
+		valkeaKeskella += 0.25;
+	}
 	//valkeille laitakeskusta
-
-
+	for(int x = 2; x < 6; x++)
+	{
+		if(_lauta[2][x] != NULL && (_lauta[2][x]->getKoodi() == VS || _lauta[2][x]->getKoodi() == VR))
+		{
+			valkeaKeskella += 0.11;
+		}
+		if(_lauta[5][x] != NULL && (_lauta[5][x]->getKoodi() == VS || _lauta[5][x]->getKoodi() == VR))
+		{
+			valkeaKeskella += 0.11;
+		}
+	}
+	for(int y = 3; y < 5; y++)
+	{
+		if(_lauta[y][2] != NULL && (_lauta[y][2]->getKoodi() == VS || _lauta[y][2]->getKoodi() == VR))
+		{
+			valkeaKeskella += 0.11;
+		}
+		if(_lauta[y][5] != NULL && (_lauta[y][5]->getKoodi() == VS || _lauta[y][5]->getKoodi() == VR))
+		{
+			valkeaKeskella += 0.11;
+		}
+	}
 
 	//mustille ydinkeskusta
-
+	if(_lauta[3][3] != NULL && (_lauta[3][3]->getKoodi() == MS || _lauta[3][3]->getKoodi() == MR))
+	{
+		mustaKeskella += 0.25;
+	}
+	if(_lauta[3][4] != NULL && (_lauta[3][4]->getKoodi() == MS || _lauta[3][4]->getKoodi() == MR))
+	{
+		mustaKeskella += 0.25;
+	}
+	if(_lauta[4][3] != NULL && (_lauta[4][3]->getKoodi() == MS || _lauta[4][3]->getKoodi() == MR))
+	{
+		mustaKeskella += 0.25;
+	}
+	if(_lauta[4][4] != NULL && (_lauta[4][4]->getKoodi() == MS || _lauta[4][4]->getKoodi() == MR))
+	{
+		mustaKeskella += 0.25;
+	}
 	//mustille laitakeskusta
+	for(int x = 2; x < 6; x++)
+	{
+		if(_lauta[2][x] != NULL && (_lauta[2][x]->getKoodi() == MS || _lauta[2][x]->getKoodi() == MR))
+		{
+			mustaKeskella += 0.11;
+		}
+		if(_lauta[5][x] != NULL && (_lauta[5][x]->getKoodi() == MS || _lauta[5][x]->getKoodi() == MR))
+		{
+			mustaKeskella += 0.11;
+		}
+	}
+	for(int y = 3; y < 5; y++)
+	{
+		if(_lauta[y][2] != NULL && (_lauta[y][2]->getKoodi() == MS || _lauta[y][2]->getKoodi() == MR))
+		{
+			mustaKeskella += 0.11;
+		}
+		if(_lauta[y][5] != NULL && (_lauta[y][5]->getKoodi() == MS || _lauta[y][5]->getKoodi() == MR))
+		{
+			mustaKeskella += 0.11;
+		}
+	}
+	if(vari == 0)
+		return valkeaKeskella;
+	else
+		return mustaKeskella;
 
 }
 
-
 float Asema::linjat(int vari)
 {
-	return 0;
-
+	int valkeaLaillisiaSiirtoja = 0;
+	int mustaLaillisiaSiirtoja = 0;
+	std::vector<Siirto> valkealista;
+	valkealista.reserve(50);
+	std::vector<Siirto> mustalista;
+	mustalista.reserve(50);
 	//valkoiset
-
+	for(int x = 0; x < 8; x++)
+	{
+		for(int y = 0; y < 8; y++)
+		{
+			if(_lauta[y][x] == NULL)
+			{
+				continue;
+			}
+			if(_lauta[y][x]->getKoodi() == VL)
+				_lauta[y][x]->annaSiirrot(valkealista, &Ruutu(x, y), this, 0);
+			if(_lauta[y][x]->getKoodi() == VT)
+				_lauta[y][x]->annaSiirrot(valkealista, &Ruutu(x, y), this, 0);
+			if(_lauta[y][x]->getKoodi() == VD)
+				_lauta[y][x]->annaSiirrot(valkealista, &Ruutu(x, y), this, 0);
+		}
+	}
 	//mustat
+	for(int x = 0; x < 8; x++)
+	{
+		for(int y = 0; y < 8; y++)
+		{
+			if(_lauta[y][x] == NULL)
+			{
+				continue;
+			}
+			if(_lauta[y][x]->getKoodi() == ML)
+				_lauta[y][x]->annaSiirrot(mustalista, &Ruutu(x, y), this, 0);
+			if(_lauta[y][x]->getKoodi() == MT)
+				_lauta[y][x]->annaSiirrot(mustalista, &Ruutu(x, y), this, 0);
+			if(_lauta[y][x]->getKoodi() == MD)
+				_lauta[y][x]->annaSiirrot(mustalista, &Ruutu(x, y), this, 0);
+		}
+	}
+	valkeaLaillisiaSiirtoja = valkealista.size();
+	mustaLaillisiaSiirtoja = mustalista.size();
+
+	if(vari == 0)
+		return valkeaLaillisiaSiirtoja;
+	else
+		return mustaLaillisiaSiirtoja;
 
 }
 
