@@ -36,6 +36,7 @@ Asema::Asema()
 		for (int i = 0; i < 8; i++)
 			_lauta[i][j] = NULL;
 	
+	
 	// Asetetaan alkuaseman mukaisesti nappulat ruuduille
 	_lauta[0][0] = Asema::vt;
 	_lauta[0][1] = Asema::vr;
@@ -83,14 +84,24 @@ Asema::Asema()
 
 	//_lauta[6][4] = Asema::vs;
 	
-	/*
-	_lauta[7][7] = Asema::vk;
+	
+	/*_lauta[7][7] = Asema::vk;
 	_lauta[3][3] = Asema::mk;
 	_lauta[2][2] = Asema::vr;
 	_lauta[2][4] = Asema::vs;
 	_lauta[1][1] = Asema::vs;
 	_lauta[1][3] = Asema::vs;
 	_lauta[1][5] = Asema::vs;*/
+
+	/*_lauta[7][7] = Asema::mk;
+	_lauta[3][3] = Asema::vk;
+	_lauta[4][2] = Asema::mr;
+	_lauta[4][4] = Asema::ms;
+	_lauta[5][1] = Asema::ms;
+	_lauta[5][3] = Asema::ms;
+	_lauta[5][5] = Asema::ms;*/
+
+	//_lauta[7][0] = Asema::ms;
 }
 
 void Asema::paivitaAsema(Siirto *siirto)
@@ -691,42 +702,9 @@ void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 	// poistaa listasta siirrot jotka viev‰t oman kuninkaan shakkiin
 	// k‰yd‰‰n saatua siirtolistaa l‰pi ja jos siell‰ oleva siirto asettaa kuninkaan shakkiin, 
 	// niin siirto poistetaan listasta
-	int kuninkaanX;
-	int kuninkaanY;
-	if(vari == 0)
-	{
-		for(int y = 0; y < 8; y++)
-		{
-			for(int x = 0; x < 8; x++)
-			{
-				if(this->_lauta[y][x] == NULL)
-					continue;
-				if(this->_lauta[y][x]->getKoodi() == VK)
-				{
-					kuninkaanX = x;
-					kuninkaanY = y;
-					break;
-				}
-			}
-		}
-	}
-	if(vari == 1)
-	{
-		for(int y = 0; y < 8; y++)
-		{
-			for(int x = 0; x < 8; x++)
-			{
-				if(this->_lauta[y][x] == NULL)
-					continue;
-				if(this->_lauta[y][x]->getKoodi() == MK)
-				{
-					kuninkaanX = x;
-					kuninkaanY = y;
-					break;
-				}
-			}
-		}
-	}
+	Ruutu kuninkaanSijainti = etsiKuninkaanSijainti(_siirtovuoro);
+
+
 	// Jotta ei jouduta perumaan oikeaan asemaan tehty‰ siirtoa
 	Asema testiAsema;
 	std::vector<Siirto> siivottuSiirrotLista;
@@ -741,7 +719,7 @@ void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 		if(s.onkoLyhytLinna())
 		{
 			x = 6;
-			if(this->getSiirtovuoro() == 0)
+			if(getSiirtovuoro() == 0)
 				y = 0;
 			else
 				y = 7;
@@ -749,14 +727,14 @@ void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 		else if(s.onkoPitkaLinna())
 		{
 			x = 2;
-			if(this->getSiirtovuoro() == 0)
+			if(getSiirtovuoro() == 0)
 				y = 0;
 			else
 				y = 7;
 		}
 		else
 		{
-			Nappula* siirtyva = this->_lauta[s.getAlkuruutu().getSarake()][s.getAlkuruutu().getRivi()];
+			Nappula* siirtyva = _lauta[s.getAlkuruutu().getRivi()][s.getAlkuruutu().getSarake()];
 			if((siirtyva != NULL && siirtyva->getKoodi() == VK) || (siirtyva != NULL && siirtyva->getKoodi() == MK))
 			{
 				x = s.getLoppuruutu().getSarake();
@@ -765,13 +743,13 @@ void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 			else
 			{
 				// Ei ole, kuninkaan sijainti sama kuin ennen siirron s kokeilua
-				x = kuninkaanX;
-				y = kuninkaanY;
+				x = kuninkaanSijainti.getSarake();
+				y = kuninkaanSijainti.getRivi();
 			}
 		}
 
 		// huom !vari
-		if(testiAsema.onkoRuutuUhattu(&Ruutu(x, y), !vari) == true)
+		if(!testiAsema.onkoRuutuUhattu(&Ruutu(x, y), !vari) == true)
 		{
 			siivottuSiirrotLista.push_back(s);
 		}
@@ -830,6 +808,7 @@ Ruutu Asema::etsiKuninkaanSijainti(int vari)
 			}
 		}
 			
+	std::wcout << "Ei lˆytyny kuningasta\n";
 	return Ruutu();
 }
 
@@ -841,24 +820,28 @@ void Asema::annaLaillisetSiirrot(std::vector<Siirto>& lista)
 	annaRaakaSiirrot(raakaSiirrot);
 	annaLinnoitusSiirrot(raakaSiirrot);
 
-	
 	// Suodatetaan siirrot joissa kuningas tulisi uhatuksi
 
-	//huolehdiKuninkaanShakeista(raakaSiirrot, _siirtovuoro);
+	huolehdiKuninkaanShakeista(raakaSiirrot, _siirtovuoro);
 
+	/*
 	std::vector<Siirto> laillisetSiirrot;
 	laillisetSiirrot.reserve(50);
+
+	Ruutu kuninkaanSijainti = etsiKuninkaanSijainti(getSiirtovuoro());
+
 	for(Siirto s : raakaSiirrot)
 	{
 		Asema vastustajanVuoroAsema = *this;
 		vastustajanVuoroAsema.paivitaAsema(&s);
 
-		Ruutu kuninkaanSijainti = vastustajanVuoroAsema.etsiKuninkaanSijainti(_siirtovuoro);
+		
 
 		if(!vastustajanVuoroAsema.onkoRuutuUhattu(&kuninkaanSijainti, vastustajanVuoroAsema.getSiirtovuoro()))
 		{
 			laillisetSiirrot.push_back(s);
 		}
 	}
-	lista = laillisetSiirrot;
+	*/
+	lista = raakaSiirrot;
 }
