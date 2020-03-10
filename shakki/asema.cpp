@@ -38,6 +38,7 @@ Asema::Asema()
 	
 	
 	// Asetetaan alkuaseman mukaisesti nappulat ruuduille
+	/*
 	_lauta[0][0] = Asema::vt;
 	_lauta[0][1] = Asema::vr;
 	_lauta[0][2] = Asema::vl;
@@ -59,7 +60,11 @@ Asema::Asema()
 	_lauta[7][7] = Asema::mt;
 	for (int i = 0; i < 8; i++)
 		_lauta[6][i] = Asema::ms;
-		
+		*/
+
+	_lauta[0][0] = Asema::vk;
+	_lauta[6][6] = Asema::mk;
+
 	/*
 	_lauta[0][0] = Asema::vk;
 	//_lauta[0][6] = Asema::mt;
