@@ -125,13 +125,13 @@ int main()
 
 		Siirto siirto;
 		if(asema.getSiirtovuoro() == koneenVari) {
-#if 1
+#if 0
 			tulostaLaillisetSiirrot(asema);
 			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto(lista);
 #else
 			Timer ajastin;
 			MinMaxPaluu paluu;
-			paluu = asema.minimax(maksimiSyvyys, -INT_MAX, -INT_MIN);
+			paluu = asema.minimax(maksimiSyvyys, -INT_MAX, INT_MAX);
 			ajastin.stop("Siirron miettimiseen meni");
 			tulostaLaillisetSiirrot(asema);
 			siirto = paluu._parasSiirto;
