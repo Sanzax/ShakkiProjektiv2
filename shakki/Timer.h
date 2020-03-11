@@ -13,13 +13,15 @@ struct Timer
 		start = std::chrono::high_resolution_clock::now();
 	}
 
-	void stop(const char* msg)
+	float stop(const char* msg)
 	{
 		end = std::chrono::high_resolution_clock::now();
 		duration = end - start;
 
 		float s = duration.count();
 		std::wcout << msg << " " << s << "s" << std::endl;
+
+		return s;
 	}
 
 

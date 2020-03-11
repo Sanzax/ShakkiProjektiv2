@@ -675,54 +675,6 @@ MinMaxPaluu Asema::minimax(int syvyys, float alpha, float beta)
 	}
 
 	return paluuarvo;
-	/*MinMaxPaluu paluuarvo;
-	// Generoidaan aseman lailliset siirrot.
-	std::vector<Siirto> siirrot;
-	siirrot.reserve(50);
-	annaLaillisetSiirrot(siirrot);
-
-	// Rekursion kantatapaus 1: peli on loppu
-	if(siirrot.empty())
-	{
-		if(onkoRuutuUhattu(&etsiKuninkaanSijainti(_siirtovuoro), !_siirtovuoro))
-			paluuarvo._evaluointiArvo = _siirtovuoro == 0 ? 1 : -1;
-		else
-			paluuarvo._evaluointiArvo = 0;
-		return paluuarvo;
-	}
-
-	// Rekursion kantatapaus 2: katkaisusyvyydessä
-	if(syvyys == 0)
-	{
-		paluuarvo._evaluointiArvo = evaluoi();
-		return paluuarvo;
-	}
-
-	// Rekursioaskel: kokeillaan jokaista laillista siirtoa s
-
-	// (alustetaan paluuarvo huonoimmaksi mahdolliseksi).
-	paluuarvo._evaluointiArvo = (_siirtovuoro == 0 ? -1000 : 1000);
-
-	for(Siirto s : siirrot)
-	{
-		Asema uusiAsema = *this;
-		uusiAsema.paivitaAsema(&s);
-
-		MinMaxPaluu arvo = uusiAsema.minimax(syvyys - 1, alpha, beta);
-
-		if(_siirtovuoro == 0 && arvo._evaluointiArvo > paluuarvo._evaluointiArvo)
-		{
-			paluuarvo._evaluointiArvo = arvo._evaluointiArvo;
-			paluuarvo._parasSiirto = s;
-		}
-		if(_siirtovuoro == 1 && arvo._evaluointiArvo < paluuarvo._evaluointiArvo)
-		{
-			paluuarvo._evaluointiArvo = arvo._evaluointiArvo;
-			paluuarvo._parasSiirto = s;
-		}
-	}
-
-	return paluuarvo;*/
 }
 
 

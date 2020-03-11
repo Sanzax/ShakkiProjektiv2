@@ -25,6 +25,8 @@ void tulostaLaillisetSiirrot(Asema& asema)
 int main()
 {
 	int maksimiSyvyys;
+	float vAika = 0;
+	float mAika = 0;
 	std::wcout << "Anna syvyys: ";
 	std::wcin >> maksimiSyvyys;
 
@@ -99,6 +101,9 @@ int main()
 
 	while(lopetus != 0)
 	{
+		std::wcout << "Musta Aika: " << mAika << std::endl;
+		std::wcout << "Valkoinen Aika: " << vAika << std::endl;
+
 		lista.clear();
 		Kayttoliittyma::getInstance()->piirraLauta();
 		std::wcout << "\n";
@@ -122,17 +127,16 @@ int main()
 				std::wcout << "Siirto: " << s.getAlkuruutu().getSarake() << ", " << s.getAlkuruutu().getRivi() <<
 				" : " << s.getLoppuruutu().getSarake() << ", " << s.getLoppuruutu().getRivi() << std::endl;
 		}*/
-
+		Timer ajastin;
 		Siirto siirto;
 		if(asema.getSiirtovuoro() == koneenVari) {
 #if 0
 			tulostaLaillisetSiirrot(asema);
 			siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto(lista);
 #else
-			Timer ajastin;
 			MinMaxPaluu paluu;
 			paluu = asema.minimax(maksimiSyvyys, -INT_MAX, INT_MAX);
-			ajastin.stop("Siirron miettimiseen meni");
+			
 			tulostaLaillisetSiirrot(asema);
 			siirto = paluu._parasSiirto;
 #endif
@@ -150,68 +154,14 @@ int main()
 			siirto = paluu._parasSiirto;
 #endif
 		}
+		if(asema.getSiirtovuoro() == 0)
+			vAika += ajastin.stop("Siirron miettimiseen meni");
+		else
+			mAika += ajastin.stop("Siirron miettimiseen meni");
 
 		std::wcout << "Tehty siirto: "; siirto.tulosta(); std::wcout << std::endl;
-
 		asema.paivitaAsema(&siirto);
+		std::wcout << "" << std::endl;
 	}
 	return 0;
 }
-
-/*
-int main()
-{
-	_setmode(_fileno(stdout), _O_U16TEXT);
-	wcout << "HeippariShakki\n";
-	wcout << "Tervetuloa pelaamaan!\n";
-	int lopetus = 100;
-	Asema asema; 
-	Kayttoliittyma::getInstance()->aseta_asema(&asema);
-
-	Peli peli(Kayttoliittyma::getInstance()->
-		kysyVastustajanVari());
-	std::list<Siirto> lista;
-	system("cls");
-	int koneenVari = peli.getKoneenVari();
-
-	asema.annaLaillisetSiirrot(lista);
-
-	Siirto siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
-	asema.paivitaAsema(&siirto);
-	Kayttoliittyma::getInstance()->piirraLauta();
-
-	/*
-	while (lopetus != 0) {
-		lista.clear();
-		Kayttoliittyma::getInstance()->piirraLauta();
-		wcout << "\n";
-		// Tarkasta onko peli loppu?
-		asema.annaLaillisetSiirrot(lista);
-		if (lista.size() == 0) {
-			lopetus = 0;
-			std::wcout << "Peli loppui";
-			continue;
-		}
-		Siirto siirto;
-		siirto = Kayttoliittyma::getInstance()->annaVastustajanSiirto();
-		if (asema.getSiirtovuoro() == koneenVari) {
-			MinMaxPaluu paluu;
-			if (koneenVari == 0) {
-				paluu = asema.maxi(3);
-			}
-			else {
-				paluu = asema.mini(3);
-			}
-			siirto = paluu._parasSiirto;
-		}
-		else {
-			siirto = Kayttoliittyma::getInstance()->
-				annaVastustajanSiirto();
-		}
-		asema.paivitaAsema(&siirto);
-	}
-	
-	
-	return 0;
-}
-*/
