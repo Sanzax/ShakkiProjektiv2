@@ -374,11 +374,13 @@ void Sotilas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* a
 	if(asema->kaksoisaskelSarakkeella != -1) //Ohesta lyönnit
 	{
 		if(vari == 0 && y == 4)
-			if(asema->_lauta[4][asema->kaksoisaskelSarakkeella] && asema->_lauta[4][asema->kaksoisaskelSarakkeella]->getKoodi() == MS)
-				lista.emplace_back(*alkuRuutu, Ruutu(asema->kaksoisaskelSarakkeella, 5));
+			if(x -1 == asema->kaksoisaskelSarakkeella || x+1 == asema->kaksoisaskelSarakkeella)
+				if(asema->_lauta[4][asema->kaksoisaskelSarakkeella] && asema->_lauta[4][asema->kaksoisaskelSarakkeella]->getKoodi() == MS)
+					lista.emplace_back(*alkuRuutu, Ruutu(asema->kaksoisaskelSarakkeella, 5));
 		if(vari == 1 && y == 3)
-			if(asema->_lauta[3][asema->kaksoisaskelSarakkeella] && asema->_lauta[3][asema->kaksoisaskelSarakkeella]->getKoodi() == VS)
-				lista.emplace_back(*alkuRuutu, Ruutu(asema->kaksoisaskelSarakkeella, 2));
+			if(x - 1 == asema->kaksoisaskelSarakkeella || x + 1 == asema->kaksoisaskelSarakkeella)
+				if(asema->_lauta[3][asema->kaksoisaskelSarakkeella] && asema->_lauta[3][asema->kaksoisaskelSarakkeella]->getKoodi() == VS)
+					lista.emplace_back(*alkuRuutu, Ruutu(asema->kaksoisaskelSarakkeella, 2));
 	}
 
 }

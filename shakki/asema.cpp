@@ -193,7 +193,7 @@ void Asema::paivitaAsema(Siirto *siirto)
 				kaksoisaskelSarakkeella = alkuX; // (asetetaan kaksoisaskel-lippu)
 			}
 		// Ohestalyönti on tyhjään ruutuun. Vieressä oleva (sotilas) poistetaan.
-		if((siirrettava->getKoodi() == VS || siirrettava->getKoodi() == VS) && (alkuX != loppuX) && (_lauta[loppuY][loppuX] == NULL))
+		if((siirrettava->getKoodi() == VS || siirrettava->getKoodi() == MS) && (alkuX != loppuX) && (_lauta[loppuY][loppuX] == NULL))
 			_lauta[alkuY][loppuX] = NULL;
 
 		_lauta[loppuY][loppuX] = siirrettava;
@@ -551,8 +551,6 @@ float Asema::linjat(int vari)
 				_lauta[y][x]->annaSiirrot(valkealista, &Ruutu(x, y), this, 0);
 			if(_lauta[y][x]->getKoodi() == VT)
 				_lauta[y][x]->annaSiirrot(valkealista, &Ruutu(x, y), this, 0);
-			if(_lauta[y][x]->getKoodi() == VD)
-				_lauta[y][x]->annaSiirrot(valkealista, &Ruutu(x, y), this, 0);
 		}
 	}
 	//mustat
@@ -567,8 +565,6 @@ float Asema::linjat(int vari)
 			if(_lauta[y][x]->getKoodi() == ML)
 				_lauta[y][x]->annaSiirrot(mustalista, &Ruutu(x, y), this, 0);
 			if(_lauta[y][x]->getKoodi() == MT)
-				_lauta[y][x]->annaSiirrot(mustalista, &Ruutu(x, y), this, 0);
-			if(_lauta[y][x]->getKoodi() == MD)
 				_lauta[y][x]->annaSiirrot(mustalista, &Ruutu(x, y), this, 0);
 		}
 	}
