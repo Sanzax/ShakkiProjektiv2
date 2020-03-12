@@ -55,49 +55,6 @@ int main()
 		koneenVari = vari;
 		break;
 	}
-	/*
-	while(lopetus != 0)
-	{
-		lista.clear();
-		std::wcout << "\n";
-		// Tarkasta onko peli loppu?
-		//asema.annaLaillisetSiirrot(lista);
-
-		Siirto siirto;
-		Timer ajastin;
-		MinMaxPaluu paluu;
-		if(asema.getSiirtovuoro() == 0)
-		{
-			paluu = asema.maxi(maksimiSyvyys);
-			if(paluu._evaluointiArvo == 1000000)
-			{
-				std::wcout << "Peli loppui";
-				lopetus = 0;
-				continue;
-			}
-		}
-		else
-		{
-			paluu = asema.mini(maksimiSyvyys);
-			if(paluu._evaluointiArvo == 1000000)
-			{
-				std::wcout << "Peli loppui";
-				lopetus = 0;
-				continue;
-			}
-		}
-
-		siirto = paluu._parasSiirto;
-		
-		system("cls");
-		ajastin.stop("Siirron miettimiseen meni");
-		std::wcout << "Tehty siirto: "; siirto.tulosta(); std::wcout << std::endl;
-
-		asema.paivitaAsema(&siirto);
-		Kayttoliittyma::getInstance()->piirraLauta();
-
-		std::cin.get();
-	}*/
 
 	while(lopetus != 0)
 	{
@@ -115,18 +72,6 @@ int main()
 			break;
 		}
 
-		/*
-		std::wcout << "Lailliset siirrot:" << std::endl;
-		for(Siirto s : lista)
-		{
-			if(s.onkoPitkaLinna())
-				std::wcout << "Pitkalinna" << std::endl;
-			else if(s.onkoLyhytLinna())
-				std::wcout << "Lyhytlinna" << std::endl;
-			else
-				std::wcout << "Siirto: " << s.getAlkuruutu().getSarake() << ", " << s.getAlkuruutu().getRivi() <<
-				" : " << s.getLoppuruutu().getSarake() << ", " << s.getLoppuruutu().getRivi() << std::endl;
-		}*/
 		Timer ajastin;
 		Siirto siirto;
 		if(asema.getSiirtovuoro() == koneenVari) {

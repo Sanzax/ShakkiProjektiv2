@@ -18,9 +18,6 @@ Siirto lisaaSiirto(Ruutu& alkuRuutu, Ruutu& loppuRuutu, int x, int y, const char
 	loppuRuutu.setRivi(y);
 	loppuRuutu.setSarake(x);
 	Siirto siirto = Siirto(alkuRuutu, loppuRuutu);
-	//std::wcout << nimi << " " << siirto.getAlkuruutu().getSarake() + 1 << ", " << siirto.getAlkuruutu().getRivi() + 1 <<
-	//	" : " << siirto.getLoppuruutu().getSarake() + 1 << ", " << siirto.getLoppuruutu().getRivi() + 1 << std::endl;
-
 
 	return siirto;
 }
@@ -47,14 +44,13 @@ void Torni::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* ase
 			if(tempX < 8 && tempX > -1 && tempY < 8 && tempY > -1)
 			{
 				// Jos edessä ei ole mitään, lisätään uusi siirto
-				if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, nimi));
+				if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
 				else if(nappula != NULL)
 				{
 					if(((vari == 0 && nappula->getVari() == 0)) || (vari == 1 && nappula->getVari() == 1)) break; // Jos oma nappula edessä, lopetetaan looppi
 					if((vari == 0 && nappula->getVari()) == 1 || (vari == 1 && nappula->getVari() == 0)) // Jos vastustaja edessä syödään se ja lopetetaan looppi
 					{
 						lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
-						//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, nimi));
 						break;
 					}
 				}
@@ -94,7 +90,6 @@ void Ratsu::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* ase
 			continue;
 
 		lista.emplace_back(*alkuRuutu, Ruutu(uusi_x, uusi_y));
-		//lista.emplace_back(lisaaSiirto(*alkuRuutu, loppuRuutu, uusi_x, uusi_y, "Ratsu"));
 	}
 
 }
@@ -121,14 +116,13 @@ void Lahetti::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* a
 			if(tempX < 8 && tempX > -1 && tempY < 8 && tempY > -1)
 			{
 				// Jos edessä ei ole mitään, lisätään uusi siirto
-				if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, nimi));
+				if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
 				else if(nappula != NULL)
 				{
 					if(((vari == 0 && nappula->getVari() == 0)) || (vari == 1 && nappula->getVari() == 1)) break; // Jos oma nappula edessä, lopetetaan looppi
 					if(( vari == 0 && nappula->getVari()) == 1  || (vari == 1 && nappula->getVari() == 0)) // Jos vastustaja edessä syödään se ja lopetetaan looppi
 					{
 						lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
-						//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, nimi));
 						break;
 					}
 				}
@@ -164,13 +158,12 @@ void Kuningas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* 
 		if(tempX < 8 && tempX > -1 && tempY < 8 && tempY > -1)
 		{
 			// Jos edessä ei ole mitään, lisätään uusi siirto
-			if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+			if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY)); 
 			else if(nappula != NULL)
 			{
 				if((vari == 0 && nappula->getVari()) == 1 || (vari == 1 && nappula->getVari() == 0)) // Jos vastustaja edessä syödään se ja lopetetaan looppi
 				{
 					lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
-					//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
 				}
 			}
 		}
@@ -190,82 +183,16 @@ void Kuningas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* 
 		if(tempX < 8 && tempX > -1 && tempY < 8 && tempY > -1)
 		{
 			// Jos edessä ei ole mitään, lisätään uusi siirto
-			if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+			if(nappula == NULL) lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
 			else if(nappula != NULL)
 			{
 				if((vari == 0 && nappula->getVari()) == 1 || (vari == 1 && nappula->getVari() == 0)) // Jos vastustaja edessä syödään se ja lopetetaan looppi
-					lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));//lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, tempX, tempY, "Kuningas"));
+					lista.emplace_back(*alkuRuutu, Ruutu(tempX, tempY));
 			}
 		}
 
 	}
 }
-
-/*
-void Sotilas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema, int vari)
-{
-	int x = alkuRuutu->getSarake();
-	int y = alkuRuutu->getRivi();
-
-	Ruutu* loppuRuutu = new Ruutu(0,0);
-	if(vari == 0)
-	{
-		if(y == 1) // Valkoinen sotilas, ei ole liikkunut
-			if(asema->_lauta[y + 2][x] == NULL) // Kaksoisaskel
-				lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x, y+2, "Sotilas"));
-		
-		if(asema->_lauta[y + 1][x] == NULL) // Yksi askel
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x, y + 1, "Sotilas"));
-
-		if(asema->_lauta[y + 1][x + 1] != NULL && asema->_lauta[y + 1][x + 1]->getVari() == 1) // Syönti oikealle
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x + 1, y + 1, "Sotilas"));
-		
-		if(asema->_lauta[y + 1][x - 1] != NULL && asema->_lauta[y + 1][x - 1]->getVari() == 1) // Syönti vasemmalle
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x -1, y + 1, "Sotilas"));
-
-		//Ohesta lyönnit
-		if(asema->_lauta[y][x - 1] != NULL && asema->_lauta[y][x - 1]->getKoodi() == MS && asema->kaksoisaskelSarakkeella == x-1)
-		{
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x - 1, y + 1, "Sotilas"));
-		}
-		else if(asema->_lauta[y][x + 1] != NULL && asema->_lauta[y][x + 1]->getKoodi() == MS && asema->kaksoisaskelSarakkeella == x + 1)
-		{
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x + 1, y + 1, "Sotilas"));
-		}
-
-	}
-	else
-	{
-		if(y == 6) // Musta sotilas, ei ole liikkunut
-			if(asema->_lauta[y - 2][x] == NULL) // Kaksois askel
-				lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x, y - 2, "Sotilas"));
-
-		if(asema->_lauta[y - 1][x] == NULL) // Yksi askel
-		{
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x, y - 1, "Sotilas"));
-		}
-			
-		if(asema->_lauta[y - 1][x + 1] != NULL && asema->_lauta[y - 1][x + 1]->getVari() == 0) // Syönti oikealle
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x + 1, y - 1, "Sotilas"));
-
-		if(asema->_lauta[y - 1][x - 1] != NULL && asema->_lauta[y - 1][x - 1]->getVari() == 0) // Syönti vasemmalle
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x -1, y - 1, "Sotilas"));
-
-		//Ohesta lyönnit
-		if(asema->_lauta[y][x - 1] != NULL && asema->_lauta[y][x - 1]->getKoodi() == VS && asema->kaksoisaskelSarakkeella == x - 1)
-		{
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x - 1, y - 1, "Sotilas"));
-		}
-		else if(asema->_lauta[y][x + 1] != NULL && asema->_lauta[y][x + 1]->getKoodi() == VS && asema->kaksoisaskelSarakkeella == x + 1)
-		{
-			lista.emplace_back(lisaaSiirto(*alkuRuutu, *loppuRuutu, x + 1, y - 1, "Sotilas"));
-		}
-
-	}
-
-	delete loppuRuutu;
-}
-*/
 
 void Sotilas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* asema, int vari)
 {
@@ -371,7 +298,7 @@ void Sotilas::annaSiirrot(std::vector<Siirto>& lista, Ruutu* alkuRuutu, Asema* a
 		}
 	}
 
-	if(asema->kaksoisaskelSarakkeella != -1) //Ohesta lyönnit
+	if(asema->kaksoisaskelSarakkeella != -1) //Ohestalyönnit
 	{
 		if(vari == 0 && y == 4)
 			if(x -1 == asema->kaksoisaskelSarakkeella || x+1 == asema->kaksoisaskelSarakkeella)

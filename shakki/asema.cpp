@@ -31,14 +31,13 @@ Asema::Asema()
 	_onkoValkeaKTliikkunut = false;
 	_onkoValkeaKuningasLiikkunut = false;
 
-	// Ensin alustetaan kaikki laudan ruudut nappulla "NULL", koska muuten ruuduissa satunnaista tauhkaa
+	// Ensin alustetaan kaikki laudan ruudut nappulla "NULL"
 	for (int j = 0; j < 8; j++)
 		for (int i = 0; i < 8; i++)
 			_lauta[i][j] = NULL;
 	
 	
 	// Asetetaan alkuaseman mukaisesti nappulat ruuduille
-#if 1	
 	_lauta[0][0] = Asema::vt;
 	_lauta[0][1] = Asema::vr;
 	_lauta[0][2] = Asema::vl;
@@ -60,22 +59,6 @@ Asema::Asema()
 	_lauta[7][7] = Asema::mt;
 	for (int i = 0; i < 8; i++)
 		_lauta[6][i] = Asema::ms;
-#endif
-
-#if 0
-	_lauta[0][0] = Asema::vt;
-	_lauta[0][7] = Asema::vt;
-	_lauta[1][7] = Asema::vs;
-	_lauta[1][0] = Asema::vs;
-	_lauta[0][4] = Asema::vk;
-
-	_lauta[7][4] = Asema::mk;
-	_lauta[7][0] = Asema::mt;
-	_lauta[7][7] = Asema::mt;
-	_lauta[6][7] = Asema::ms;
-	_lauta[6][0] = Asema::ms;
-
-#endif
 
 }
 
@@ -102,7 +85,7 @@ void Asema::paivitaAsema(Siirto *siirto)
 			_onkoMustaKTliikkunut = true;
 		}
 	}
-	// onko pitk‰ linna
+
 	else if(siirto->onkoPitkaLinna())
 	{
 		if(_siirtovuoro == 0)
@@ -215,30 +198,15 @@ bool Asema::getOnkoMustaKTliikkunut()
 	return _onkoMustaKTliikkunut;
 }
 
-
-/* 1. Laske nappuloiden arvo
-Daami = 9
-Torni = 5
-L‰hetti = 3,25
-Ratsu = 3
-Sotilas = 1
-
-2. Kuninkaan hyvyys
-Jos avaus tai keskipeli, niin hyv‰ ett‰ kunigas g1 tai b1/c1
-Loppupeliss‰ vaikea sanoa halutaanko olla auttamassa omaa sotilasta korottumaan
-vai olla est‰m‰ss‰ vastustajan korotusta siksi ei oteta kantaa
-3. Arvosta keskustaa sotilailla ja ratsuilla
-4. Arvosta pitki‰ linjoja daami, torni ja l‰hetti
-*/
-
 const float materiaaliKerroin = 1;
 const float kuningasKerroin = 1;
 const float linjaKerroin = 0.05f;
 const float keskustaKerroin = 1;
+
+//kertoimet asetettu sen takia ett‰ niiden avulla asioiden painoarvoa voidaan s‰‰t‰‰ helposti yhdest‰ paikasta
+
 float Asema::evaluoi()
 {
-	//kertoimet asetettu sen takia ett‰ niiden avulla asioiden painoarvoa voidaan s‰‰t‰‰ helposti yhdest‰ paikasta
-
 	//1. Nappuloiden arvo
 	float vMateriaali = laskeNappuloidenArvo(0) * materiaaliKerroin;
 	float mMateriaali = laskeNappuloidenArvo(1) * materiaaliKerroin;
@@ -305,7 +273,7 @@ float Asema::kuningasTurvassa(int vari)
 			if(_lauta[0][6]->getKoodi() == VK && (_lauta[1][5]->getKoodi() == VS && (_lauta[1][6]->getKoodi() == VS)))
 				valkeaArvo += 2;
 		}
-		// Jos pitk‰ll‰ puolella saa lis‰arvooa 1 edelytt‰‰ ett‰  c ja b sotilas paikallaan
+		// Jos pitk‰ll‰ puolella saa lis‰arvooa 1 edellytt‰‰ ett‰  c ja b sotilas paikallaan
 		if(_lauta[0][1] != NULL && _lauta[0][2] != NULL && _lauta[1][1] != NULL && _lauta[2][1] != NULL)
 		{
 			if(_lauta[0][1]->getKoodi() == VK || _lauta[0][2]->getKoodi() == VK && (_lauta[1][1]->getKoodi() == VS && (_lauta[1][2]->getKoodi() == VS)))
@@ -526,30 +494,6 @@ float Asema::linjat(int vari)
 
 }
 
-
-// https://chessprogramming.wikispaces.com/Minimax MinMax-algoritmin pseudokoodi (lis‰sin parametrina aseman)
-//int maxi(int depth, asema a) 
-//	if (depth == 0) return evaluate();
-//	int max = -oo;
-//	for (all moves ) {
-//		score = mini(depth - 1, seuraaja);
-//		if (score > max)
-//			max = score;
-//	}
-//	return max;
-//}
-
-//int mini(int depth, asema a) {
-//	if (depth == 0) return -evaluate();
-//	int min = +oo;
-//	for (all moves) {
-//		score = maxi(depth - 1);
-//		if (score < min)
-//			min = score;
-//	}
-//	return min;
-//}
-
 MinMaxPaluu Asema::minimax(int syvyys, float alpha, float beta)
 {
 	MinMaxPaluu paluuarvo;
@@ -574,10 +518,6 @@ MinMaxPaluu Asema::minimax(int syvyys, float alpha, float beta)
 		paluuarvo._evaluointiArvo = evaluoi();
 		return paluuarvo;
 	}
-
-	// Rekursioaskel: kokeillaan jokaista laillista siirtoa s
-
-	// (alustetaan paluuarvo huonoimmaksi mahdolliseksi).
 
 	if(_siirtovuoro == 0)
 	{
@@ -731,13 +671,8 @@ bool Asema::onkoRuutuUhattu(Ruutu* ruutu, int vastustajanVari)
 
 void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 {
-	// poistaa listasta siirrot jotka viev‰t oman kuninkaan shakkiin
-	// k‰yd‰‰n saatua siirtolistaa l‰pi ja jos siell‰ oleva siirto asettaa kuninkaan shakkiin, 
-	// niin siirto poistetaan listasta
 	Ruutu kuninkaanSijainti = etsiKuninkaanSijainti(_siirtovuoro);
 
-
-	// Jotta ei jouduta perumaan oikeaan asemaan tehty‰ siirtoa
 	Asema testiAsema;
 	std::vector<Siirto> siivottuSiirrotLista;
 	siivottuSiirrotLista.reserve(50);
@@ -747,7 +682,6 @@ void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 		testiAsema.paivitaAsema(&s);
 		int x, y;
 
-		// Kuninkaan siirto?
 		if(s.onkoLyhytLinna())
 		{
 			x = 6;
@@ -774,13 +708,11 @@ void Asema::huolehdiKuninkaanShakeista(std::vector<Siirto>& lista, int vari)
 			}
 			else
 			{
-				// Ei ole, kuninkaan sijainti sama kuin ennen siirron s kokeilua
 				x = kuninkaanSijainti.getSarake();
 				y = kuninkaanSijainti.getRivi();
 			}
 		}
 
-		// huom !vari
 		if(!testiAsema.onkoRuutuUhattu(&Ruutu(x, y), !vari) == true)
 		{
 			siivottuSiirrotLista.push_back(s);
@@ -856,24 +788,5 @@ void Asema::annaLaillisetSiirrot(std::vector<Siirto>& lista)
 
 	huolehdiKuninkaanShakeista(raakaSiirrot, _siirtovuoro);
 
-	/*
-	std::vector<Siirto> laillisetSiirrot;
-	laillisetSiirrot.reserve(50);
-
-	Ruutu kuninkaanSijainti = etsiKuninkaanSijainti(getSiirtovuoro());
-
-	for(Siirto s : raakaSiirrot)
-	{
-		Asema vastustajanVuoroAsema = *this;
-		vastustajanVuoroAsema.paivitaAsema(&s);
-
-		
-
-		if(!vastustajanVuoroAsema.onkoRuutuUhattu(&kuninkaanSijainti, vastustajanVuoroAsema.getSiirtovuoro()))
-		{
-			laillisetSiirrot.push_back(s);
-		}
-	}
-	*/
 	lista = raakaSiirrot;
 }

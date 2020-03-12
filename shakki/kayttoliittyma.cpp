@@ -6,11 +6,7 @@
 #include <iostream>
 #include "kayttoliittyma.h"
 
-//using namespace std;
-
-
 Kayttoliittyma* Kayttoliittyma::instance = 0;
-
 
 Kayttoliittyma* Kayttoliittyma::getInstance()
 {
@@ -19,25 +15,8 @@ Kayttoliittyma* Kayttoliittyma::getInstance()
 	return instance;
 }
 
-
 void Kayttoliittyma::piirraLauta()
 {
-
-	//Saa unicode shakkinappulat toimimaan printf kanssa:
-	//SetConsoleOutputCP(65001);
-	//printf(q);
-	//char q[] = "King: \xE2\x99\x94.\n";
-
-	//Saa unicode shakkinappulat toimimaan cout:n kanssa:
-	//_setmode(_fileno(stdout), _O_U16TEXT);
-
-	/*
-		Kaksinkertainen for silmukka joka käy asema-olion laudan läpi ja jos
-		siinä on nappula olio, niin kysytään sen nimi
-		ja tulostetaan se muussa tapauksessa tulostetaan 2 tyhjää välilyöntiä.
-		Parillisuuteen perustuen värjätään jokatoisen "ruudun" taustaväri
-	*/
-
 	for(int y = 7; y >= 0; y--)
 	{
 		// Tulosta numerot sivulle
@@ -76,7 +55,6 @@ void Kayttoliittyma::piirraLauta()
 	muodollisesti korrekti (ei tarkista aseman laillisuutta)
 	Ottaa irti myös nappulan kirjaimen (K/D/L/R/T), tarkistaa että kirjain korrekti
 */
-
 
 bool onkoSyoteVirheellinen(const int arvo, const char* virheIlmoitus)
 {
@@ -157,7 +135,7 @@ Siirto Kayttoliittyma::annaVastustajanSiirto(std::vector<Siirto>& laillisetSiirr
 				continue;
 		}
 
-		/* Laittomien siirtojen tarkistus */
+		/* Pelaajan syötteen laillisuuden tarkistus */
 #if 1
 		bool laillinenSiirtoLoytyi = false;
 		auto iter = laillisetSiirrot.begin();
@@ -172,7 +150,6 @@ Siirto Kayttoliittyma::annaVastustajanSiirto(std::vector<Siirto>& laillisetSiirr
 				pitkaLinna = true;
 				break;
 			}
-
 
 			//jos lailliset siirrot listalta löytyy syöte joka vastaa pelaajan syötettä, niin lopetetaan tarkastelu ja hyväksytään siirto
 			if (s.getAlkuruutu().getSarake() == alkuX && s.getAlkuruutu().getRivi() == alkuY && s.getLoppuruutu().getSarake() == loppuX && s.getLoppuruutu().getRivi() == loppuY) {
