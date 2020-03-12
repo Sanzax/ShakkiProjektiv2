@@ -62,74 +62,21 @@ Asema::Asema()
 		_lauta[6][i] = Asema::ms;
 #endif
 
-#if 0 //valkoinen
-	_lauta[0][4] = Asema::vk;
-	_lauta[1][5] = Asema::vs;
-	_lauta[1][6] = Asema::vs;
-	_lauta[1][7] = Asema::vs;
-
-
-	_lauta[2][6] = Asema::md;
-
-	_lauta[7][4] = Asema::mk;
-#endif
-
 #if 0
-	_lauta[7][4] = Asema::mk;
-	_lauta[6][5] = Asema::ms;
-	_lauta[6][6] = Asema::ms;
-	_lauta[6][7] = Asema::ms;
-
-
-	_lauta[5][6] = Asema::vd;
-
+	_lauta[0][0] = Asema::vt;
+	_lauta[0][7] = Asema::vt;
+	_lauta[1][7] = Asema::vs;
+	_lauta[1][0] = Asema::vs;
 	_lauta[0][4] = Asema::vk;
-	_lauta[0][3] = Asema::mt;
+
+	_lauta[7][4] = Asema::mk;
+	_lauta[7][0] = Asema::mt;
+	_lauta[7][7] = Asema::mt;
+	_lauta[6][7] = Asema::ms;
+	_lauta[6][0] = Asema::ms;
+
 #endif
 
-
-	/*
-	_lauta[0][0] = Asema::vk;
-	//_lauta[0][6] = Asema::mt;
-	_lauta[4][4] = Asema::ml;
-	_lauta[0][2] = Asema::mt;
-	_lauta[2][0] = Asema::mt;
-	_lauta[7][7] = Asema::mk;
-	_lauta[6][7] = Asema::ms;
-	_lauta[7][6] = Asema::ms;
-	_lauta[6][6] = Asema::ms;*/
-
-
-
-
-	//_lauta[7][7] = Asema::mk;
-	//_lauta[6][7] = Asema::ms;
-	//_lauta[6][6] = Asema::ms;
-
-	//_lauta[5][2] = Asema::mt;
-	//_lauta[5][5] = Asema::mt;
-	//_lauta[0][4] = Asema::vk;
-
-	//_lauta[6][4] = Asema::vs;
-	
-	
-	/*_lauta[7][7] = Asema::vk;
-	_lauta[3][3] = Asema::mk;
-	_lauta[2][2] = Asema::vr;
-	_lauta[2][4] = Asema::vs;
-	_lauta[1][1] = Asema::vs;
-	_lauta[1][3] = Asema::vs;
-	_lauta[1][5] = Asema::vs;*/
-
-	/*_lauta[7][7] = Asema::mk;
-	_lauta[3][3] = Asema::vk;
-	_lauta[4][2] = Asema::mr;
-	_lauta[4][4] = Asema::ms;
-	_lauta[5][1] = Asema::ms;
-	_lauta[5][3] = Asema::ms;
-	_lauta[5][5] = Asema::ms;*/
-
-	//_lauta[7][0] = Asema::ms;
 }
 
 void Asema::paivitaAsema(Siirto *siirto)
@@ -212,7 +159,8 @@ void Asema::paivitaAsema(Siirto *siirto)
 		if(siirrettava->getKoodi() == MT && alkuX == 0 && alkuY == 7) _onkoMustaDTliikkunut = true;
 		else if(siirrettava->getKoodi() == MT && alkuX == 7 && alkuY == 7) _onkoMustaKTliikkunut = true;
 		else if(siirrettava->getKoodi() == VT && alkuX == 0 && alkuY == 0)_onkoValkeaDTliikkunut = true;
-		else if(siirrettava->getKoodi() == VT && alkuX == 0 && alkuY == 7) _onkoValkeaKTliikkunut = true;
+		//else if(siirrettava->getKoodi() == VT && alkuX == 0 && alkuY == 7) _onkoValkeaKTliikkunut = true;
+		else if (siirrettava->getKoodi() == VT && alkuX == 7 && alkuY == 0) _onkoValkeaKTliikkunut = true;
 	}
 	//p‰ivitet‰‰n _siirtovuoro
 	_siirtovuoro = (_siirtovuoro == 0) ? 1 : 0;
